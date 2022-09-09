@@ -4,21 +4,21 @@ namespace Isu.Entities;
 
 public class Student
 {
-    private int? _id;
-    private string? _name;
-    private CourseNumber? _course;
+    private int _id;
+    private string _name;
 
-    public Student()
-    {
-        _id = null;
-        _name = string.Empty;
-        _course = null;
-    }
-
-    public Student(int id, string name, CourseNumber course)
+    public Student(int id, string name, CourseNumber course, GroupName groupName)
     {
         _id = id;
         _name = name;
-        _course = course;
+        Course = course;
+        NameOfGroup = groupName;
+    }
+
+    public GroupName NameOfGroup { get; set; }
+
+    public CourseNumber Course
+    {
+        get;
     }
 }
