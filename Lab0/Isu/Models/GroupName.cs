@@ -8,4 +8,13 @@ public class GroupName
     {
         _groupName = groupName;
     }
+
+    public CourseNumber Course
+    {
+        get
+        {
+            var courseNumber = new CourseNumber((int)_groupName[2]);
+            return courseNumber;
+        }
+    }
 }
