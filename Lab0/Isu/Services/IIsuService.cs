@@ -1,141 +1,156 @@
 using Isu.Entities;
 using Isu.Models;
 
-namespace Isu.Services;
-
-public interface IIsuService
+namespace Isu.Services
 {
-    Group AddGroup(GroupName name);
-    Student AddStudent(Group group, string name);
-
-    Student GetStudent(int id);
-    Student? FindStudent(int id);
-    List<Student> FindStudents(GroupName groupName);
-    List<Student> FindStudents(CourseNumber courseNumber);
-
-    Group? FindGroup(GroupName groupName);
-    List<Group> FindGroups(CourseNumber courseNumber);
-
-    void ChangeStudentGroup(Student student, Group newGroup);
-}
-
-public class IsuService : IIsuService
-{
-    private const int TabelNum = 100000;
-    private List<Group> _groups = new List<Group>();
-    private List<Student> _students = new List<Student>();
-    public Group AddGroup(GroupName name)
+    public interface IIsuService
     {
-        var newGroup = new Group(name);
-        _groups.Add(newGroup);
-        return newGroup;
+        Group AddGroup(GroupName name);
+        Student AddStudent(Group group, string name);
+
+        Student GetStudent(int id);
+        Student? FindStudent(int id);
+        List<Student> FindStudents(GroupName groupName);
+        List<Student> FindStudents(CourseNumber courseNumber);
+
+        Group? FindGroup(GroupName groupName);
+        List<Group> FindGroups(CourseNumber courseNumber);
+
+        void ChangeStudentGroup(Student student, Group newGroup);
     }
 
-    public Student AddStudent(Group group, string name)
+    public class IsuService : IIsuService
     {
-        var newStudent = new Student(TabelNum + StudentsCount(), name, group.NameOfGroup.Course, group.NameOfGroup);
-        group.AddStudent(newStudent);
-        _students.Add(newStudent);
-        return newStudent;
-    }
+        private const int TabelNum = 100000;
+        private const int MaxStudentsPerGroup = 20;
+        private List<Group> _groups;
+        private List<Student> _students;
 
-    public Student GetStudent(int id)
-    {
-        try
+        public IsuService()
         {
-            return _students[id - TabelNum];
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-    }
-
-    public Student? FindStudent(int id)
-    {
-        if (id - TabelNum < StudentsCount())
-        {
-            Student? student = _students[id - TabelNum];
-            return student;
+            _groups = new List<Group>();
+            _students = new List<Student>();
         }
 
-        return null;
-    }
-
-    public List<Student> FindStudents(GroupName groupName)
-    {
-        var students = new List<Student>();
-        foreach (Group group in _groups)
+        public Group AddGroup(GroupName name)
         {
-            if (group.NameOfGroup == groupName)
+            var newGroup = new Group(name);
+            _groups.Add(newGroup);
+            return newGroup;
+        }
+
+        public Student AddStudent(Group group, string name)
+        {
+            if (group.Students.Count >= MaxStudentsPerGroup)
             {
-                foreach (Student student in group.Students)
+                throw new ReachMaxStudentPerGroupException();
+            }
+
+            var newStudent = new Student(TabelNum + StudentsCount(), name, group.NameOfGroup.Course, group.NameOfGroup);
+            group.AddStudent(newStudent);
+            _students.Add(newStudent);
+            return newStudent;
+        }
+
+        public Student GetStudent(int id)
+        {
+            try
+            {
+                return _students[id - TabelNum];
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        public Student? FindStudent(int id)
+        {
+            if (id - TabelNum < StudentsCount())
+            {
+                Student? student = _students[id - TabelNum];
+                return student;
+            }
+
+            return null;
+        }
+
+        public List<Student> FindStudents(GroupName groupName)
+        {
+            var students = new List<Student>();
+            foreach (Group group in _groups)
+            {
+                if (group.NameOfGroup == groupName)
+                {
+                    foreach (Student student in group.Students)
+                    {
+                        students.Add(student);
+                    }
+                }
+            }
+
+            return students;
+        }
+
+        public List<Student> FindStudents(CourseNumber courseNumber)
+        {
+            var students = new List<Student>();
+            foreach (Student student in _students)
+            {
+                if (student.Course == courseNumber)
                 {
                     students.Add(student);
                 }
             }
+
+            return students;
         }
 
-        return students;
-    }
-
-    public List<Student> FindStudents(CourseNumber courseNumber)
-    {
-        var students = new List<Student>();
-        foreach (Student student in _students)
+        public Group? FindGroup(GroupName groupName)
         {
-            if (student.Course == courseNumber)
+            foreach (Group group in _groups)
             {
-                students.Add(student);
+                if (group.NameOfGroup == groupName)
+                {
+                    return group;
+                }
             }
+
+            return null;
         }
 
-        return students;
-    }
-
-    public Group? FindGroup(GroupName groupName)
-    {
-        foreach (Group group in _groups)
+        public List<Group> FindGroups(CourseNumber courseNumber)
         {
-            if (group.NameOfGroup == groupName)
+            var groups = new List<Group>();
+            foreach (Group group in _groups)
             {
-                return group;
+                if (group.NameOfGroup.Course == courseNumber)
+                {
+                    groups.Add(group);
+                }
             }
+
+            return groups;
         }
 
-        return null;
-    }
-
-    public List<Group> FindGroups(CourseNumber courseNumber)
-    {
-        var groups = new List<Group>();
-        foreach (Group group in _groups)
+        public void ChangeStudentGroup(Student student, Group newGroup)
         {
-            if (group.NameOfGroup.Course == courseNumber)
+            foreach (var group in _groups)
             {
-                groups.Add(group);
+                if (group.NameOfGroup == student.NameOfGroup)
+                {
+                    group.RemoveStudent(student);
+                }
             }
+
+            newGroup.AddStudent(student);
+            student.NameOfGroup = newGroup.NameOfGroup;
         }
 
-        return groups;
-    }
-
-    public void ChangeStudentGroup(Student student, Group newGroup)
-    {
-        foreach (var group in _groups)
+        private int StudentsCount()
         {
-            if (group.NameOfGroup == student.NameOfGroup)
-            {
-                group.RemoveStudent(student);
-            }
+            return _students.Count;
         }
-
-        newGroup.AddStudent(student);
-    }
-
-    private int StudentsCount()
-    {
-        return _students.Count;
     }
 }

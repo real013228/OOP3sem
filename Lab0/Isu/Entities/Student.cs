@@ -15,7 +15,7 @@ public class Student
         NameOfGroup = groupName;
     }
 
-    public GroupName NameOfGroup { get; }
+    public GroupName NameOfGroup { get; set; }
 
     public CourseNumber Course
     {
