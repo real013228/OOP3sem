@@ -4,21 +4,14 @@ namespace Isu.Entities;
 
 public class Student
 {
-    private int _id;
-    private string _name;
-
-    public Student(int id, string name, CourseNumber course, GroupName groupName)
+    public Student(int id, string name, Group group)
     {
-        _id = id;
-        _name = name;
-        Course = course;
-        NameOfGroup = groupName;
+        Id = id;
+        Name = name;
+        Group = group;
     }
 
-    public GroupName NameOfGroup { get; }
-
-    public CourseNumber Course
-    {
-        get;
-    }
+    public string Name { get; }
+    public int Id { get; }
+    public Group Group { get; }
 }
