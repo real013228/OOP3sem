@@ -12,9 +12,10 @@ public class IsuServiceTests
     [Fact]
     public void AddStudentToGroup_StudentHasGroupAndGroupContainsStudent()
     {
-        var student = new Student(334805, "Natsuki Subaru", new Group(new GroupName("M32011")));
         var group = new Group(new GroupName("M32011"));
-        Assert.Throws<StudentHasGroupException>(() => _service.AddStudent(group, student.Name));
+        var student = new Student(334805, "Natsuki Subaru", group);
+        Assert.Contains(student, group.Students);
+        Assert.Equal(group, student.Group);
     }
 
     [Fact]

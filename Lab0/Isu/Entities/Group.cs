@@ -16,6 +16,11 @@ public class Group
 
     public GroupName NameOfGroup { get; }
 
+    public IReadOnlyList<Student> Students
+    {
+        get => _students;
+    }
+
     public void AddStudent(Student student)
     {
         if (_students.Count >= MaxStudentsPerGroup)
@@ -23,14 +28,12 @@ public class Group
             throw new ReachedMaxStudentsPerGroupException(this);
         }
 
-        if (!string.IsNullOrEmpty(student.Group.NameOfGroup.Name) && this._students.Contains(student))
+        if (!string.IsNullOrEmpty(student.Group.NameOfGroup.Name) && _students.Contains(student))
         {
             throw new StudentHasGroupException(student);
         }
-        else
-        {
-            _students.Add(student);
-        }
+
+        _students.Add(student);
     }
 
     public void RemoveStudent(Student student)
