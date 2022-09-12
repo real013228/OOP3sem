@@ -1,3 +1,6 @@
+using Isu.CustomExceptions;
+using Isu.Entities;
+
 namespace Isu.Models;
 
 public class CourseNumber
@@ -6,6 +9,13 @@ public class CourseNumber
 
     public CourseNumber(int courseNumber)
     {
-        _courseNumber = courseNumber;
+        if (courseNumber is > 0 and <= 7)
+        {
+            _courseNumber = courseNumber;
+        }
+        else
+        {
+            throw new InvalidCourseNumberException(courseNumber.ToString());
+        }
     }
 }

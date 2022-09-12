@@ -1,20 +1,26 @@
+using Isu.CustomExceptions;
+
 namespace Isu.Models;
 
 public class GroupName
 {
-    private string _groupName;
-
     public GroupName(string groupName)
     {
-        _groupName = groupName;
+        if (!CorrectNameGroup(groupName))
+        {
+            throw new InvalidGroupNameException(groupName);
+        }
+
+        Name = groupName;
+        Course = new CourseNumber(groupName[2] - '0');
     }
 
-    public CourseNumber Course
+    public string Name { get; }
+    public CourseNumber Course { get; }
+    private bool CorrectNameGroup(string groupName)
     {
-        get
-        {
-            var courseNumber = new CourseNumber((int)_groupName[2]);
-            return courseNumber;
-        }
+        return groupName.Length == 6 && char.IsLetter(groupName[0]) && char.IsDigit(groupName[1])
+               && char.IsDigit(groupName[2]) && char.IsDigit(groupName[3]) && char.IsDigit(groupName[4])
+               && char.IsDigit(groupName[5]);
     }
 }
