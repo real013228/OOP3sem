@@ -27,7 +27,7 @@ public class Student
     public Group Group
     {
         get;
-        set;
+        private set;
     }
 
     public void ChangeGroup(Group newGroup)

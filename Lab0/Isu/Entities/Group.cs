@@ -16,10 +16,7 @@ public class Group
 
     public GroupName NameOfGroup { get; }
 
-    public IReadOnlyList<Student> Students
-    {
-        get => _students;
-    }
+    public IReadOnlyList<Student> Students => _students;
 
     public void AddStudent(Student student)
     {
