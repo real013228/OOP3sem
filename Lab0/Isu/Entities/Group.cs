@@ -11,10 +11,10 @@ public class Group
 
     public Group(GroupName name)
     {
-        NameOfGroup = name;
+        Name = name;
     }
 
-    public GroupName NameOfGroup { get; }
+    public GroupName Name { get; }
 
     public IReadOnlyList<Student> Students => _students;
 
@@ -25,7 +25,7 @@ public class Group
             throw new ReachedMaxStudentsPerGroupException(this);
         }
 
-        if (!string.IsNullOrEmpty(student.Group.NameOfGroup.Name) && _students.Contains(student))
+        if (!string.IsNullOrEmpty(student.Group.Name.Name) && _students.Contains(student))
         {
             throw new StudentHasGroupException(student);
         }
