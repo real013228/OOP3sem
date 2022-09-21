@@ -16,7 +16,6 @@ public class Student
 
     public string Name { get; }
     public StudentId Id { get; }
-
     public Group Group { get; private set; }
 
     public void ChangeGroup(Group newGroup)
