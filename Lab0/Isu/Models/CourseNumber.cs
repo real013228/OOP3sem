@@ -1,6 +1,5 @@
 using System.Globalization;
 using Isu.CustomExceptions;
-using Isu.Entities;
 
 namespace Isu.Models;
 

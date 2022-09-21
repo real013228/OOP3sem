@@ -9,8 +9,7 @@ public class IdGenerator
 
     public IdGenerator(int tableNum)
     {
-        var id = new StudentId(tableNum);
-        _id = tableNum + id.GetMinimumId();
+        _id = tableNum + StudentId.GetMinimumId();
     }
 
     public int GetId()

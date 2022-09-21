@@ -5,10 +5,9 @@ namespace Isu.Entities;
 
 public class Student
 {
-    public Student(int id, string name, Group group)
+    public Student(StudentId id, string name, Group group)
     {
-        var studentId = new StudentId(id);
-        Id = studentId;
+        Id = id;
         Name = name;
         Group = group;
         group.AddStudent(this);

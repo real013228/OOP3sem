@@ -13,7 +13,8 @@ public class IsuServiceTests
     public void AddStudentToGroup_StudentHasGroupAndGroupContainsStudent()
     {
         var group = new Group(new GroupName("M32011"));
-        var student = new Student(334805, "Natsuki Subaru", group);
+        var id = new StudentId(134805);
+        var student = new Student(id, "Natsuki Subaru", group);
         Assert.Contains(student, group.Students);
         Assert.Equal(group, student.Group);
     }
@@ -37,8 +38,9 @@ public class IsuServiceTests
     [Fact]
     public void TransferStudentToAnotherGroup_GroupChanged()
     {
+        var id = new StudentId(334334);
         var group = new Group(new GroupName("M32022"));
-        var student = new Student(334334, "Emilia", new Group(new GroupName("M32211")));
+        var student = new Student(id, "Emilia", new Group(new GroupName("M32211")));
         _service.ChangeStudentGroup(student, group);
         Assert.Equal(student.Group, group);
     }

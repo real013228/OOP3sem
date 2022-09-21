@@ -1,4 +1,6 @@
-﻿using Isu.CustomExceptions;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Isu.CustomExceptions;
 using Isu.Entities;
 using Isu.Models;
 
@@ -25,7 +27,7 @@ public class IsuService : IIsuService
     public Student AddStudent(Group group, string name)
     {
         var id = new StudentId(_tableNum++);
-        var newStudent = new Student(id.GetId(), name, group);
+        var newStudent = new Student(id, name, group);
         _students.Add(newStudent);
         return newStudent;
     }

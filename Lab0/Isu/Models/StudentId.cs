@@ -20,13 +20,13 @@ public class StudentId
         _id = id.GetId();
     }
 
+    public static int GetMinimumId()
+    {
+        return MinIdNum;
+    }
+
     public int GetId()
     {
         return _id;
-    }
-
-    public int GetMinimumId()
-    {
-        return MinIdNum;
     }
 }
