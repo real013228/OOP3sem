@@ -1,3 +1,4 @@
+using System.Globalization;
 using Isu.CustomExceptions;
 
 namespace Isu.Models;
@@ -12,11 +13,12 @@ public class GroupName
         }
 
         Name = groupName;
-        Course = new CourseNumber(groupName[2] - '0');
+        Course = new CourseNumber(groupName);
     }
 
     public string Name { get; }
     public CourseNumber Course { get; }
+
     private bool CorrectNameGroup(string groupName)
     {
         return groupName.Length == 6 && char.IsLetter(groupName[0]) && char.IsDigit(groupName[1])

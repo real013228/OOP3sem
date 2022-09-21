@@ -6,20 +6,26 @@ namespace Isu.Services;
 
 public class IsuService : IIsuService
 {
-    private int _tabelNum = 0;
     private List<Group> _groups = new List<Group>();
     private List<Student> _students = new List<Student>();
+    private int _tableNum = 0;
+
     public Group AddGroup(GroupName name)
     {
         var newGroup = new Group(name);
+        if (_groups.Contains(newGroup))
+        {
+            throw new GroupAlreadyExistsException(newGroup);
+        }
+
         _groups.Add(newGroup);
         return newGroup;
     }
 
     public Student AddStudent(Group group, string name)
     {
-        var id = new Id();
-        var newStudent = new Student(id.IdGenerator(_tabelNum++), name, group);
+        var id = new StudentId(_tableNum++);
+        var newStudent = new Student(id.GetId(), name, group);
         _students.Add(newStudent);
         return newStudent;
     }
@@ -39,7 +45,8 @@ public class IsuService : IIsuService
 
     public Student? FindStudent(int id)
     {
-        Student? student = _students.First(x => x.Id == id);
+        var curId = new StudentId(id);
+        Student? student = _students.First(x => x.Id == curId);
         return student;
     }
 

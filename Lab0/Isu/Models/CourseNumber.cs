@@ -1,3 +1,4 @@
+using System.Globalization;
 using Isu.CustomExceptions;
 using Isu.Entities;
 
@@ -5,17 +6,22 @@ namespace Isu.Models;
 
 public class CourseNumber
 {
-    private int _courseNumber;
+    private readonly int _courseNumber;
 
-    public CourseNumber(int courseNumber)
+    public CourseNumber(string group)
     {
-        if (courseNumber is > 0 and <= 7)
+        if (CharUnicodeInfo.GetDigitValue(group[2]) is > 0 and <= 7)
         {
-            _courseNumber = courseNumber;
+            _courseNumber = CharUnicodeInfo.GetDigitValue(group[2]);
         }
         else
         {
-            throw new InvalidCourseNumberException(courseNumber.ToString());
+            throw new InvalidCourseNumberException(group.ToString());
         }
+    }
+
+    public int GetCourseNumber()
+    {
+        return _courseNumber;
     }
 }
