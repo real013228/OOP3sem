@@ -37,7 +37,7 @@ public class Group
     {
         if (_students.Any())
         {
-            _students.Add(student);
+            _students.Remove(student);
         }
         else
         {

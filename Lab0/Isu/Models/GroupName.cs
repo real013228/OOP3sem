@@ -1,5 +1,6 @@
 using System.Globalization;
 using Isu.CustomExceptions;
+using Isu.Entities;
 
 namespace Isu.Models;
 
@@ -21,8 +22,6 @@ public class GroupName
 
     private bool CorrectNameGroup(string groupName)
     {
-        return groupName.Length == 6 && char.IsLetter(groupName[0]) && char.IsDigit(groupName[1])
-               && char.IsDigit(groupName[2]) && char.IsDigit(groupName[3]) && char.IsDigit(groupName[4])
-               && char.IsDigit(groupName[5]);
+        return groupName.Length == 6 && groupName.Substring(0, 5).All(char.IsDigit);
     }
 }
