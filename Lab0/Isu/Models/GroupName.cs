@@ -22,6 +22,6 @@ public class GroupName
 
     private bool CorrectNameGroup(string groupName)
     {
-        return groupName.Length == 6 && groupName.Substring(1, 5).All(char.IsDigit);
+        return groupName.Length == 6 && char.IsLetter(groupName[0]) && groupName.Substring(1, 5).All(char.IsDigit);
     }
 }
