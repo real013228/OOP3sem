@@ -7,7 +7,7 @@ namespace Isu.Entities;
 public class Group
 {
     private const int MaxStudentsPerGroup = 3;
-    private List<Student> _students = new List<Student>();
+    private readonly List<Student> _students = new List<Student>();
 
     public Group(GroupName name)
     {
@@ -22,12 +22,12 @@ public class Group
     {
         if (_students.Count >= MaxStudentsPerGroup)
         {
-            throw new ReachedMaxStudentsPerGroupException(this);
+            throw GroupException.ReachedMaxStudentsPerGroup(this);
         }
 
         if (!string.IsNullOrEmpty(student.Group.Name.Name) && _students.Contains(student))
         {
-            throw new StudentHasGroupException(student);
+            throw GroupException.StudentHasGroup(student);
         }
 
         _students.Add(student);
@@ -35,13 +35,11 @@ public class Group
 
     public void RemoveStudent(Student student)
     {
-        if (_students.Any())
+        if (!_students.Contains(student))
         {
-            _students.Remove(student);
+            throw GroupException.CannotRemoveStudent(student);
         }
-        else
-        {
-            throw new ReachedMaxStudentsPerGroupException(this);
-        }
+
+        _students.Remove(student);
     }
 }

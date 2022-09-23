@@ -10,7 +10,7 @@ public class GroupName
     {
         if (!CorrectNameGroup(groupName))
         {
-            throw new InvalidGroupNameException(groupName);
+            throw GroupNameException.InvalidGroupName(groupName);
         }
 
         Name = groupName;

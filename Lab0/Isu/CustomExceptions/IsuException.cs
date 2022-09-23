@@ -1,12 +1,12 @@
 ﻿namespace Isu.CustomExceptions;
 
-public class IsuException : Exception
+public abstract class IsuException : Exception
 {
-    public IsuException() { }
+    protected IsuException() { }
 
-    public IsuException(string message)
+    protected IsuException(string message)
         : base(message) { }
 
-    public IsuException(string message, Exception inner)
+    protected IsuException(string message, Exception inner)
         : base(message, inner) { }
 }

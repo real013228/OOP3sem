@@ -8,7 +8,7 @@ namespace Isu.Test;
 
 public class IsuServiceTests
 {
-    private IsuService _service = new IsuService();
+    private readonly IsuService _service = new IsuService();
     [Fact]
     public void AddStudentToGroup_StudentHasGroupAndGroupContainsStudent()
     {
@@ -26,13 +26,13 @@ public class IsuServiceTests
         _service.AddStudent(group, "A");
         _service.AddStudent(group, "B");
         _service.AddStudent(group, "C");
-        Assert.Throws<ReachedMaxStudentsPerGroupException>(() => _service.AddStudent(group, "Exception?"));
+        Assert.Throws<GroupException>(() => _service.AddStudent(group, "Exception?"));
     }
 
     [Fact]
     public void CreateGroupWithInvalidName_ThrowException()
     {
-        Assert.Throws<InvalidGroupNameException>(() => new GroupName("REZERO"));
+        Assert.Throws<GroupNameException>(() => new GroupName("REZERO"));
     }
 
     [Fact]

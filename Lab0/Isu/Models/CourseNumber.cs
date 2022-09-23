@@ -7,15 +7,15 @@ public class CourseNumber
 {
     private readonly int _courseNumber;
 
-    public CourseNumber(string group)
+    public CourseNumber(string groupName)
     {
-        if (CharUnicodeInfo.GetDigitValue(group[2]) is > 0 and <= 7)
+        if (CharUnicodeInfo.GetDigitValue(groupName[2]) is > 0 and <= 7)
         {
-            _courseNumber = CharUnicodeInfo.GetDigitValue(group[2]);
+            _courseNumber = CharUnicodeInfo.GetDigitValue(groupName[2]);
         }
         else
         {
-            throw new InvalidCourseNumberException(group.ToString());
+            throw CourseNumberException.InvalidCourseNumber(groupName);
         }
     }
 
