@@ -56,7 +56,7 @@ public class IsuService : IIsuService
 
     public List<Student> FindStudents(CourseNumber courseNumber)
     {
-        return _students.Where(student => student.Group.Name.Course == courseNumber).ToList();
+        return _students.Where(student => student.Group.Name.Course.Number == courseNumber.Number).ToList();
     }
 
     public Group? FindGroup(GroupName groupName)
@@ -66,7 +66,7 @@ public class IsuService : IIsuService
 
     public List<Group> FindGroups(CourseNumber courseNumber)
     {
-        return _groups.Where(group => group.Name.Course == courseNumber).ToList();
+        return _groups.Where(group => group.Name.Course.Number == courseNumber.Number).ToList();
     }
 
     public void ChangeStudentGroup(Student student, Group newGroup)
