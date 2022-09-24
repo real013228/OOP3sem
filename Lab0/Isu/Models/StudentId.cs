@@ -18,7 +18,7 @@ public class StudentId
         Id = id;
     }
 
-    private int Id { get; }
+    public int Id { get; }
 
     public StudentId NextId()
     {

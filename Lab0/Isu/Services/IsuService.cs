@@ -45,13 +45,13 @@ public class IsuService : IIsuService
     public Student? FindStudent(int id)
     {
         var curId = new StudentId(id);
-        Student? student = _students.FirstOrDefault(x => x.Id == curId);
+        Student? student = _students.FirstOrDefault(x => x.Id.Id == curId.Id);
         return student;
     }
 
     public List<Student> FindStudents(GroupName groupName)
     {
-        return _students.Where(x => x.Group.Name == groupName).ToList();
+        return _students.Where(x => x.Group.Name.Name == groupName.Name).ToList();
     }
 
     public List<Student> FindStudents(CourseNumber courseNumber)
@@ -61,7 +61,7 @@ public class IsuService : IIsuService
 
     public Group? FindGroup(GroupName groupName)
     {
-        return _groups.FirstOrDefault(group => group.Name == groupName);
+        return _groups.FirstOrDefault(group => group.Name.Name == groupName.Name);
     }
 
     public List<Group> FindGroups(CourseNumber courseNumber)
