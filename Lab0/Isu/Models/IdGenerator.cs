@@ -5,15 +5,17 @@ namespace Isu.Models;
 
 public class IdGenerator
 {
-    private readonly StudentId _id;
+    private StudentId _id;
 
     public IdGenerator()
     {
-        _id = new StudentId(100000);
+        _id = new StudentId(StudentId.MinIdNum);
     }
 
-    public StudentId NextId()
+    public StudentId GetNextId()
     {
-        return _id.GetNextId();
+        StudentId newId = _id.NextId();
+        _id = _id.NextId();
+        return newId;
     }
 }

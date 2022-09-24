@@ -4,7 +4,7 @@ using Isu.Services;
 
 namespace Isu.Entities;
 
-public class Group
+public class Group : IEquatable<Group>
 {
     private const int MaxStudentsPerGroup = 3;
     private readonly List<Student> _students = new List<Student>();
@@ -25,11 +25,6 @@ public class Group
             throw GroupException.ReachedMaxStudentsPerGroup(this);
         }
 
-        if (!string.IsNullOrEmpty(student.Group.Name.Name) && _students.Contains(student))
-        {
-            throw GroupException.StudentHasGroup(student);
-        }
-
         _students.Add(student);
     }
 
@@ -42,4 +37,7 @@ public class Group
 
         _students.Remove(student);
     }
+
+    public bool Equals(Group? other)
+        => Name == other?.Name;
 }

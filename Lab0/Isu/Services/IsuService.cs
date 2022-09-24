@@ -14,19 +14,19 @@ public class IsuService : IIsuService
 
     public Group AddGroup(GroupName name)
     {
-        var newGroup = new Group(name);
-        if (_groups.Contains(newGroup))
+        if (_groups.Any(x => x.Name == name))
         {
-            throw IsuServiceException.GroupAlreadyExists(newGroup);
+            throw IsuServiceException.GroupAlreadyExists(name);
         }
 
+        var newGroup = new Group(name);
         _groups.Add(newGroup);
         return newGroup;
     }
 
     public Student AddStudent(Group group, string name)
     {
-        var newStudent = new Student(_generator.NextId(), name, group);
+        var newStudent = new Student(_generator.GetNextId(), name, group);
         _students.Add(newStudent);
         return newStudent;
     }

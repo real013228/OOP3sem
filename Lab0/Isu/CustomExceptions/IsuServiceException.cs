@@ -1,4 +1,5 @@
 ﻿using Isu.Entities;
+using Isu.Models;
 
 namespace Isu.CustomExceptions;
 
@@ -7,9 +8,9 @@ public class IsuServiceException : IsuException
     private IsuServiceException(string msg)
         : base(msg) { }
 
-    public static IsuServiceException GroupAlreadyExists(Group group)
+    public static IsuServiceException GroupAlreadyExists(GroupName groupName)
     {
-        return new IsuServiceException($"Group: {group.Name.Name} this group is already exists in system");
+        return new IsuServiceException($"Group: {groupName.Name} this group is already exists in system");
     }
 
     public static IsuServiceException CannotFindStudent(int id)

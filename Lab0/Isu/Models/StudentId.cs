@@ -6,9 +6,8 @@ namespace Isu.Models;
 
 public class StudentId
 {
-    private const int MaxIdNum = 900000;
-    private const int MinIdNum = 100000;
-
+    public const int MaxIdNum = 900000;
+    public const int MinIdNum = 100000;
     public StudentId(int id)
     {
         if (!(id >= MinIdNum && id < MaxIdNum))
@@ -19,11 +18,11 @@ public class StudentId
         Id = id;
     }
 
-    private int Id { get; set; }
+    private int Id { get; }
 
-    public StudentId GetNextId()
+    public StudentId NextId()
     {
-        Id++;
-        return this;
+        var value = new StudentId(Id + 1);
+        return value;
     }
 }

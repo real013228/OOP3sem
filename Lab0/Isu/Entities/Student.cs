@@ -3,7 +3,7 @@ using Isu.Models;
 
 namespace Isu.Entities;
 
-public class Student
+public class Student : IEquatable<Student>
 {
     public Student(StudentId id, string name, Group group)
     {
@@ -23,4 +23,7 @@ public class Student
         Group.RemoveStudent(this);
         Group = newGroup;
     }
+
+    public bool Equals(Student? other)
+        => Id == other?.Id;
 }
