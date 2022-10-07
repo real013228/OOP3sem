@@ -6,17 +6,16 @@ namespace Shops.Services;
 
 public class ShopsService : IShopsService
 {
-    private readonly Shop _shop1 =
-        new Shop("Krusty Krab", "bikini bottom 23");
-
-    private readonly Shop _shop2 = new Shop("Chum Bucket", "bikini bottoml 24");
-
     private readonly List<Shop> _shops;
 
     public ShopsService()
     {
-        _shops = new List<Shop>
-            { _shop1, _shop2 };
+        _shops = new List<Shop>();
+    }
+
+    public void AddShop(Shop shop)
+    {
+        _shops.Add(shop);
     }
 
     public ProductCountList SupplyProducts(Shop shop, ProductCountList list)
@@ -44,8 +43,16 @@ public class ShopsService : IShopsService
 
     public Shop FindCheapestShop(Product product, int count)
     {
-        decimal minPrice = _shops.Min(x => x.GetProductInfo(product, count));
-        Shop? shop = _shops.FirstOrDefault(x => x.GetProductInfo(product, count) == minPrice);
+        decimal minPrice = 99999;
+        foreach (var shop1 in _shops)
+        {
+            if (shop1.GetProductAvailability(product, count))
+            {
+                minPrice = Math.Min(shop1.GetProductInfo(product, count), minPrice);
+            }
+        }
+
+        Shop? shop = _shops.FirstOrDefault(x => x.GetProductAvailability(product, count));
         if (shop == null)
         {
             throw new NullReferenceException();

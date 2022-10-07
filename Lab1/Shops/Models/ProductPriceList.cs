@@ -16,7 +16,10 @@ public class ProductPriceList
 
     public void AddProductList(ProductPriceList list)
     {
-        list.PriceList.ToList().ForEach(x => AddProduct(x.Key, x.Value));
+        foreach (var product in list.PriceList)
+        {
+            AddProduct(product.Key, product.Value);
+        }
     }
 
     public void AddProduct(Product product, decimal price)

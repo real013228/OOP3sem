@@ -10,4 +10,9 @@ public class Store
     }
 
     public ProductCountList List { get; }
+
+    public int GetProductCount(Product product)
+    {
+        return List.GetProductCount(product);
+    }
 }

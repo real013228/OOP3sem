@@ -26,7 +26,11 @@ public class Shop : IEquatable<Shop>
     public ProductCountList RequestSupply(ProductCountList list)
     {
         _provider.ProductSupply(_shopStore, list);
-        list.List.ToList().ForEach(x => SetPrice(x.Key, x.Value));
+        foreach (var product in list.List)
+        {
+            SetPrice(product.Key, product.Value);
+        }
+
         return list;
     }
 
@@ -39,6 +43,11 @@ public class Shop : IEquatable<Shop>
 
     public decimal MakePurchase(Buyer person, ProductCountList list)
     {
+        foreach (var product in list.List.Where(product => !(_shopStore.GetProductCount(product.Key) > 0)))
+        {
+            throw ShopException.InvalidCountException(product.Key);
+        }
+
         decimal sum = list.List.Sum(product => PriceList.PriceList[product.Key]);
         person.Buy(sum, list);
         foreach (var product in list.List)
@@ -52,7 +61,7 @@ public class Shop : IEquatable<Shop>
     public decimal GetProductInfo(Product product, int count)
     {
         int productCount = _shopStore.List.GetProductCount(product);
-        if (_shopStore.List.GetProductCount(product) <= count)
+        if (productCount >= count)
         {
             return PriceList.PriceList[product];
         }
@@ -60,6 +69,11 @@ public class Shop : IEquatable<Shop>
         {
             throw ShopException.InvalidCountException(product);
         }
+    }
+
+    public bool GetProductAvailability(Product product, int count)
+    {
+        return _shopStore.GetProductCount(product) >= count;
     }
 
     public bool Equals(Shop? other)

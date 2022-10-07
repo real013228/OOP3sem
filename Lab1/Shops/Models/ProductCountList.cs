@@ -29,7 +29,6 @@ public class ProductCountList
 
     public void AddProductList(ProductCountList list)
     {
-        // List.ToList().ForEach(x => AddProduct(x.Key, x.Value));
         foreach (KeyValuePair<Product, int> product in list.List)
         {
             AddProduct(product.Key, product.Value);

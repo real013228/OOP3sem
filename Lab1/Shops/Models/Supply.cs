@@ -13,7 +13,11 @@ public class Supply
 
     private ProductCountList AddProducts(Store store, ProductCountList list)
     {
-        list.List.ToList().ForEach(x => store.List.AddProduct(x.Key, x.Value));
+        foreach (var product in list.List)
+        {
+            store.List.AddProduct(product.Key, product.Value);
+        }
+
         return store.List;
     }
 }
