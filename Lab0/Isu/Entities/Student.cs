@@ -7,18 +7,12 @@ public class Student
     private int _id;
     private string _name;
 
-    public Student(int id, string name, CourseNumber course, GroupName groupName)
+    public Student(int id, string name, Group group)
     {
         _id = id;
         _name = name;
-        Course = course;
-        NameOfGroup = groupName;
+        Group = group;
     }
 
-    public GroupName NameOfGroup { get; set; }
-
-    public CourseNumber Course
-    {
-        get;
-    }
+    public Group Group { get; }
 }

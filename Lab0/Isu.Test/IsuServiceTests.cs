@@ -36,8 +36,6 @@ public class IsuServiceTests
     [Fact]
     public void CreateGroupWithInvalidName_ThrowException()
     {
-        var goodGroupName = new GroupName("M32011");
-        Assert.Equal(goodGroupName, goodGroupName);
         Assert.Throws<CreateGroupWithInvalidNameException>(() => new GroupName("REZERO"));
     }
 

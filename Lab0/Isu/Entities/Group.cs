@@ -13,10 +13,7 @@ public class Group
         _students = new List<Student>();
     }
 
-    public GroupName NameOfGroup
-    {
-        get;
-    }
+    public GroupName NameOfGroup { get; }
 
     public IReadOnlyList<Student> Students => _students;
 
