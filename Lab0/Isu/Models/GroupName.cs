@@ -1,27 +1,42 @@
-using System.Globalization;
-using Isu.CustomExceptions;
-using Isu.Entities;
+using Isu.Services;
 
 namespace Isu.Models;
 
 public class GroupName
 {
+    private string _groupName;
+
     public GroupName(string groupName)
     {
-        if (!CorrectNameGroup(groupName))
+        if (CorrectNameOfGroup(groupName))
         {
-            throw GroupNameException.InvalidGroupName(groupName);
+            _groupName = groupName;
         }
-
-        Name = groupName;
-        Course = new CourseNumber(groupName);
+        else
+        {
+            throw new CreateGroupWithInvalidNameException();
+        }
     }
 
-    public string Name { get; }
-    public CourseNumber Course { get; }
-
-    private bool CorrectNameGroup(string groupName)
+    public CourseNumber Course
     {
-        return groupName.Length == 6 && char.IsLetter(groupName[0]) && groupName.Substring(1, 5).All(char.IsDigit);
+        get
+        {
+            var courseNumber = new CourseNumber((int)_groupName[2]);
+            return courseNumber;
+        }
+    }
+
+    private bool CorrectNameOfGroup(string groupName)
+    {
+        if (groupName.Length == 6 && groupName[0] >= 'A' && groupName[0] <= 'Z' && groupName[1] >= '0' &&
+            groupName[1] <= '9' && groupName[2] >= '0' && groupName[2] <= '7' && groupName[3] >= '0' &&
+            groupName[3] <= '9' && groupName[4] >= '0' && groupName[4] <= '9' && groupName[5] >= '0' &&
+            groupName[5] <= '9')
+        {
+            return true;
+        }
+
+        return false;
     }
 }
