@@ -1,18 +1,29 @@
+using Isu.CustomExceptions;
 using Isu.Models;
 
 namespace Isu.Entities;
 
-public class Student
+public class Student : IEquatable<Student>
 {
-    private int _id;
-    private string _name;
-
-    public Student(int id, string name, Group group)
+    public Student(StudentId id, string name, Group group)
     {
-        _id = id;
-        _name = name;
+        Id = id;
+        Name = name;
         Group = group;
+        group.AddStudent(this);
     }
 
-    public Group Group { get; }
+    public string Name { get; }
+    public StudentId Id { get; }
+    public Group Group { get; private set; }
+
+    public void ChangeGroup(Group newGroup)
+    {
+        newGroup.AddStudent(this);
+        Group.RemoveStudent(this);
+        Group = newGroup;
+    }
+
+    public bool Equals(Student? other)
+        => Id == other?.Id;
 }

@@ -1,3 +1,4 @@
+using Isu.CustomExceptions;
 using Isu.Entities;
 using Isu.Models;
 using Isu.Services;
@@ -7,50 +8,40 @@ namespace Isu.Test;
 
 public class IsuServiceTests
 {
+    private readonly IsuService _service = new IsuService();
     [Fact]
     public void AddStudentToGroup_StudentHasGroupAndGroupContainsStudent()
     {
-        var groupName = new GroupName("M32011");
-        var group = new Group(groupName);
-        var service = new IsuService();
-        service.AddGroup(groupName);
-        var expectedStudent = service.AddStudent(group, "Kirill Savvinov");
-        Assert.Equal(expectedStudent.NameOfGroup, groupName);
-        Assert.Contains(expectedStudent, group.Students);
+        var group = new Group(new GroupName("M32011"));
+        var id = new StudentId(134805);
+        var student = new Student(id, "Natsuki Subaru", group);
+        Assert.Contains(student, group.Students);
+        Assert.Equal(group, student.Group);
     }
 
     [Fact]
     public void ReachMaxStudentPerGroup_ThrowException()
     {
-        var groupName = new GroupName("M32011");
-        var group = new Group(groupName);
-        var service = new IsuService();
-        for (int i = 0; i < 20; i++)
-        {
-            service.AddStudent(group, "Kirill Savvinov");
-        }
-
-        Assert.Throws<Isu.Services.ReachMaxStudentPerGroupException>(() => service.AddStudent(group, "Kirill Savvinov"));
+        var group = new Group(new GroupName("M32000"));
+        _service.AddStudent(group, "A");
+        _service.AddStudent(group, "B");
+        _service.AddStudent(group, "C");
+        Assert.Throws<GroupException>(() => _service.AddStudent(group, "Exception?"));
     }
 
     [Fact]
     public void CreateGroupWithInvalidName_ThrowException()
     {
-        Assert.Throws<CreateGroupWithInvalidNameException>(() => new GroupName("REZERO"));
+        Assert.Throws<GroupNameException>(() => new GroupName("REZERO"));
     }
 
     [Fact]
     public void TransferStudentToAnotherGroup_GroupChanged()
     {
-        var course = new CourseNumber(1);
-        var groupName = new GroupName("M32011");
-        var anotherGroupName = new GroupName("M32001");
-        var currentGroup = new Group(groupName);
-        var anotherGroup = new Group(anotherGroupName);
-        var student = new Student(334805, "Subaru Natsuki", course, groupName);
-        var service = new IsuService();
-        service.ChangeStudentGroup(student, anotherGroup);
-        Assert.Equal(student.NameOfGroup, anotherGroupName);
-        Assert.NotEqual(student.NameOfGroup, groupName);
+        var id = new StudentId(334334);
+        var group = new Group(new GroupName("M32022"));
+        var student = new Student(id, "Emilia", new Group(new GroupName("M32211")));
+        _service.ChangeStudentGroup(student, group);
+        Assert.Equal(student.Group, group);
     }
 }
