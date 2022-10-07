@@ -54,7 +54,7 @@ public class ShopsService : IShopsService
         return shop;
     }
 
-    public ProductPriceList PurchaseProductConsignment(Shop shop, Buyer person, ProductPriceList list)
+    public ProductCountList PurchaseProductConsignment(Shop shop, Buyer person, ProductCountList list)
     {
         shop.MakePurchase(person, list);
         return list;

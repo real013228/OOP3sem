@@ -14,7 +14,7 @@ public class Shop : IEquatable<Shop>
     {
         _shopStore = new Store();
         ShopName = shopName;
-        _id = new Guid(address);
+        _id = Guid.NewGuid();
         _address = address;
         _provider = new Supply();
         PriceList = new ProductPriceList();
@@ -25,7 +25,9 @@ public class Shop : IEquatable<Shop>
 
     public ProductCountList RequestSupply(ProductCountList list)
     {
-        return _provider.ProductSupply(_shopStore, list);
+        _provider.ProductSupply(_shopStore, list);
+        list.List.ToList().ForEach(x => SetPrice(x.Key, x.Value));
+        return list;
     }
 
     public decimal ChangePrice(Product product, decimal newCost)
@@ -35,17 +37,22 @@ public class Shop : IEquatable<Shop>
         return newCost;
     }
 
-    public decimal MakePurchase(Buyer person, ProductPriceList list)
+    public decimal MakePurchase(Buyer person, ProductCountList list)
     {
-        person.Buy(list.TotalCost);
-        person.Basket.AddProductList(list);
-        return list.TotalCost;
+        decimal sum = list.List.Sum(product => PriceList.PriceList[product.Key]);
+        person.Buy(sum, list);
+        foreach (var product in list.List)
+        {
+            _shopStore.List.List[product.Key] -= product.Value;
+        }
+
+        return sum;
     }
 
     public decimal GetProductInfo(Product product, int count)
     {
         int productCount = _shopStore.List.GetProductCount(product);
-        if (_shopStore.List.GetProductCount(product) < count)
+        if (_shopStore.List.GetProductCount(product) <= count)
         {
             return PriceList.PriceList[product];
         }
@@ -73,8 +80,15 @@ public class Shop : IEquatable<Shop>
         return _id.GetHashCode();
     }
 
-    private void SetPrice(ProductPriceList list)
+    private void SetPrice(Product product, decimal newCost)
     {
-        PriceList = list;
+        if (!PriceList.PriceList.ContainsKey(product))
+        {
+            PriceList.AddProduct(product, newCost);
+        }
+        else
+        {
+            ChangePrice(product, newCost);
+        }
     }
 }

@@ -7,7 +7,7 @@ public class Product : IEquatable<Product>
     public Product(string name)
     {
         Name = name;
-        Id = new Guid(name);
+        Id = Guid.NewGuid();
     }
 
     public Guid Id { get; }

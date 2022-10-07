@@ -27,6 +27,15 @@ public class ProductCountList
         return List[product];
     }
 
+    public void AddProductList(ProductCountList list)
+    {
+        // List.ToList().ForEach(x => AddProduct(x.Key, x.Value));
+        foreach (KeyValuePair<Product, int> product in list.List)
+        {
+            AddProduct(product.Key, product.Value);
+        }
+    }
+
     public void AddProduct(Product product, int count)
     {
         if (List.ContainsKey(product))

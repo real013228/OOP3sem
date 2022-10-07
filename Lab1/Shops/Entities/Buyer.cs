@@ -8,17 +8,18 @@ public class Buyer
     public Buyer(decimal money)
     {
         Money = money;
-        Basket = new ProductPriceList();
+        Basket = new ProductCountList();
     }
 
     public decimal Money { get; private set; }
-    public ProductPriceList Basket { get; }
+    public ProductCountList Basket { get; }
 
-    public void Buy(decimal cost)
+    public void Buy(decimal cost, ProductCountList list)
     {
         if (Money >= cost)
         {
             Money -= cost;
+            Basket.AddProductList(list);
         }
         else
         {
