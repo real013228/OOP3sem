@@ -10,7 +10,7 @@ public class StudentExtra
     private const int MaxExtraStudiesPerStudent = 2;
     private readonly List<ExtraStudy> _studies;
     private readonly Student _student;
-    private GroupExtra _groupExtra;
+    private readonly GroupExtra _groupExtra;
     public StudentExtra(Student student, GroupExtra groupExtra)
     {
         _student = student;

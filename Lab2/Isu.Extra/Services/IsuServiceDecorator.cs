@@ -23,25 +23,13 @@ public class IsuServiceDecorator : IIsuService
         return _isuService.AddStudent(group, name);
     }
 
-    public Student GetStudent(int id)
-    {
-        return _isuService.GetStudent(id);
-    }
+    public Student GetStudent(int id) => _isuService.GetStudent(id);
 
-    public Student? FindStudent(int id)
-    {
-        return _isuService.FindStudent(id);
-    }
+    public Student? FindStudent(int id) => _isuService.FindStudent(id);
 
-    public List<Student> FindStudents(GroupName groupName)
-    {
-        return _isuService.FindStudents(groupName);
-    }
+    public List<Student> FindStudents(GroupName groupName) => _isuService.FindStudents(groupName);
 
-    public List<Student> FindStudents(CourseNumber courseNumber)
-    {
-        return _isuService.FindStudents(courseNumber);
-    }
+    public List<Student> FindStudents(CourseNumber courseNumber) => _isuService.FindStudents(courseNumber);
 
     public Group? FindGroup(GroupName groupName)
     {
