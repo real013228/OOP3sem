@@ -15,7 +15,7 @@ public interface IIsuExtraService
     public IReadOnlyList<Stream> GetStreamsCourse(ExtraStudy course);
     public IReadOnlyList<StudentExtra> GetStudentList(Stream extraStudyStream);
     public IEnumerable<StudentExtra> GetStudentListWithoutExtraStudy(GroupExtra group);
-    public void AddStudent(Student student, Group group);
-    public void AddGroup(Group group);
+    public void SyncStudent(Student student, Group group);
+    public void SyncGroup(Group group);
     public StudentExtra GetStudent(Student student);
 }

@@ -42,12 +42,12 @@ public class IsuExtraService : IIsuExtraService
         return group.GetStudentsWithoutExtraStudy();
     }
 
-    public void AddStudent(Student student, Group group)
+    public void SyncStudent(Student student, Group group)
     {
         _students.Add(new StudentExtra(student, new GroupExtra(group)));
     }
 
-    public void AddGroup(Group group)
+    public void SyncGroup(Group group)
     {
         _groups.Add(new GroupExtra(group));
     }

@@ -13,13 +13,13 @@ public class IsuServiceDecorator : IIsuService
 
     public Group AddGroup(GroupName name)
     {
-        _isuExtraService.AddGroup(new Group(name));
+        _isuExtraService.SyncGroup(new Group(name));
         return _isuService.AddGroup(name);
     }
 
     public Student AddStudent(Group group, string name)
     {
-        _isuExtraService.AddStudent(new Student(_generator.GetNextId(), name, group), group);
+        _isuExtraService.SyncStudent(new Student(_generator.GetNextId(), name, group), group);
         return _isuService.AddStudent(group, name);
     }
 
