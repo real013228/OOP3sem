@@ -7,10 +7,10 @@ namespace Isu.Extra.Entities;
 
 public class StudentExtra
 {
+    private const int MaxExtraStudiesPerStudent = 2;
     private readonly List<ExtraStudy> _studies;
     private readonly Student _student;
     private GroupExtra _groupExtra;
-
     public StudentExtra(Student student, GroupExtra groupExtra)
     {
         _student = student;
@@ -24,7 +24,7 @@ public class StudentExtra
 
     public void AddEnroll(ExtraStudy extraStudy)
     {
-        if (Study.Count > 2)
+        if (Study.Count > MaxExtraStudiesPerStudent)
         {
             throw StudentExtraException.InvalidEnrollReachedMax();
         }
@@ -40,8 +40,7 @@ public class StudentExtra
             throw StudentExtraException.InvalidExtraStudy();
         }
 
-        Stream? stream;
-        stream = extraStudy.Streams.Count == 0 ? extraStudy.AddStream() : extraStudy.GetStream();
+        Stream? stream = extraStudy.Streams.Count == 0 ? extraStudy.AddStream() : extraStudy.GetStream();
         _studies.Add(extraStudy);
         extraStudy.Streams.First(x => x.Schedule.CheckIntersection(_groupExtra.Schedule)).AddStudent(this);
         stream.AddStudent(this);

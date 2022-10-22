@@ -19,6 +19,7 @@ public class Stream
 
     public Schedule Schedule { get; }
     public IReadOnlyList<StudentExtra> Group => _group;
+
     public void AddStudent(StudentExtra student)
     {
         if (!student.Study.Contains(_extraStudy))
@@ -27,6 +28,16 @@ public class Stream
         }
 
         _group.Add(student);
+    }
+
+    public void RemoveStudent(StudentExtra student)
+    {
+        if (!_group.Contains(student))
+        {
+            throw StreamException.InvalidRequest(student);
+        }
+
+        _group.Remove(student);
     }
 
     public bool StreamFull()

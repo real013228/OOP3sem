@@ -5,30 +5,32 @@ namespace Isu.Extra.Models;
 
 public class Schedule
 {
-    private readonly List<Lesson> _lessons;
-
-    public Schedule()
+    private Schedule(List<Lesson> lessons)
     {
-        _lessons = new List<Lesson>();
+        Lessons = new List<Lesson>();
     }
 
-    public IReadOnlyList<Lesson> Lessons => _lessons;
+    public static ScheduleBuilder Builder => new ScheduleBuilder();
 
-    public void AddLesson(Schedule schedule)
-    {
-        if (!CheckIntersection(schedule))
-        {
-            throw ScheduleException.InvalidSchedule();
-        }
-
-        foreach (Lesson lesson in schedule.Lessons)
-        {
-            _lessons.Add(lesson);
-        }
-    }
+    public IReadOnlyList<Lesson> Lessons { get; }
 
     public bool CheckIntersection(Schedule other)
     {
-        return _lessons.All(lesson => other._lessons.All(otherLesson => lesson.Begin != otherLesson.Begin));
+        return Lessons.All(lesson => other.Lessons.All(otherLesson => lesson.Begin != otherLesson.Begin));
+    }
+
+    public class ScheduleBuilder
+    {
+        private readonly List<Lesson> _lessons = new List<Lesson>();
+
+        public void AddData(Lesson data)
+        {
+            _lessons.Add(data);
+        }
+
+        public Schedule Build()
+        {
+            return new Schedule(_lessons);
+        }
     }
 }

@@ -14,12 +14,9 @@ public class GroupExtra
     {
         _group = group;
         GroupName = new GroupNameExtra(group.Name);
-        Schedule = new Schedule();
+        Schedule = Schedule.Builder.Build();
         _groupExtraStudents = new List<StudentExtra>();
-        foreach (Student student in _group.Students)
-        {
-            _groupExtraStudents.Add(new StudentExtra(student, this));
-        }
+        _groupExtraStudents = _group.Students.Select(x => new StudentExtra(x, this)).ToList();
     }
 
     public GroupNameExtra GroupName { get; }
@@ -33,6 +30,7 @@ public class GroupExtra
     public void RemoveStudentGroup(Student student)
     {
         _group.RemoveStudent(student);
+        _groupExtraStudents.Remove(_groupExtraStudents.First(x => x.Id == student.Id.Id));
     }
 
     public void AddStudentGroup(Student student)

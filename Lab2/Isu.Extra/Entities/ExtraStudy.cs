@@ -22,7 +22,7 @@ public class ExtraStudy
 
     public Stream AddStream()
     {
-        var stream = new Stream(new Schedule(), this);
+        var stream = new Stream(Schedule.Builder.Build(), this);
         _streams.Add(stream);
         return stream;
     }

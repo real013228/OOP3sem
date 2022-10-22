@@ -11,4 +11,9 @@ public class StreamException : Exception
     {
         return new StreamException($"Invalid student: {student.Name} has not enrolled at this extra study");
     }
+
+    public static StreamException InvalidRequest(StudentExtra student)
+    {
+        return new StreamException($"Invalid student: There is not {student.Name} in group");
+    }
 }
