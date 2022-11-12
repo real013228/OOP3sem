@@ -14,7 +14,7 @@ public class ZipArchiver : IArchiver
         _forest = new List<IRepoObject>();
     }
 
-    public IStorage DoArchive(IReadOnlyCollection<IRepoObject> objects, Stream stream, IRepository repository)
+    public IStorage DoArchive(IReadOnlyCollection<IRepoObject> objects, Stream stream, IRepository repository, string path)
     {
         using var archive = new ZipArchive(stream, ZipArchiveMode.Create);
         var visitor = new ZipVisitor(archive);
@@ -25,8 +25,8 @@ public class ZipArchiver : IArchiver
 
         // return new ZipStorage(new MyPath(" "), new ZipFolder(new List<IZipObject>(), " "), new Repository(" "));
         return new ZipStorage(
-            new MyPath(Path.Combine($@"{repository.Path.PathName}", $"{DateTime.Now:yyyy-dd-M--HH-mm-ss}.zip")),
-            new ZipFolder(visitor.Top, Path.Combine($"{repository.Path.PathName}", $@"{DateTime.Now:yyyy-dd-M--HH-mm-ss}.zip")),
+            new MyPath(IRepository.PathCombine(path, $"{DateTime.Now:yyyy-dd-M--HH-mm-ss}.zip")),
+            new ZipFolder(visitor.Top, IRepository.PathCombine(path, $@"{DateTime.Now:yyyy-dd-M--HH-mm-ss}.zip")),
             repository);
     }
 }

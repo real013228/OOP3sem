@@ -22,8 +22,8 @@ public class BackupTest : IDisposable
         // using Stream memoryStream =
         //     _repository.OpenWrite(@"/mnt/TestPath/Test/FileGayws");
         // memoryStream.CopyTo(file);
-        _repository.FileSystem.CreateDirectory($@"/mnt/c/TestPath/Test/");
         _repository.FileSystem.CreateDirectory($@"/mnt/c/TestPath/MegaTest/");
+        _repository.FileSystem.CreateDirectory($@"/mnt/c/TestPath/Test/");
 
         var task = new BackupTask(_repository, _algorithm, _archiver, "Task2");
         task.AddBackupObject(_obj1);
@@ -31,8 +31,7 @@ public class BackupTest : IDisposable
         task.DoJob();
         task.RemoveBackupObject(_obj1);
         task.DoJob();
-
-        // Assert.Equal(2,  _repository.FileSystem);
+        Assert.Equal(2, task.Backup.RestorePoints.Count);
     }
 
     public void Dispose()

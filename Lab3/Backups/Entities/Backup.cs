@@ -14,4 +14,9 @@ public class Backup : IBackup
     }
 
     public IReadOnlyCollection<RestorePoint> RestorePoints => _restorePoints;
+
+    public void AddRestorePoint(RestorePoint restorePoint)
+    {
+        _restorePoints.Add(restorePoint);
+    }
 }

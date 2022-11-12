@@ -40,4 +40,11 @@ public class InMemoryRepository : IRepository
     {
         return FileSystem.OpenFile(path, FileMode.Create, FileAccess.ReadWrite);
     }
+
+    public string CreateDirectory(string name)
+    {
+        FileSystem.CreateDirectory(System.IO.Path.Combine($"{Path.PathName}", name));
+        UPath ans = System.IO.Path.Combine($"{Path.PathName}", name);
+        return ans.ToString();
+    }
 }

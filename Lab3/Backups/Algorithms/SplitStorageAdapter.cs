@@ -9,12 +9,14 @@ public class SplitStorageAdapter : IStorage
     private readonly List<IStorage> _storages;
     private readonly IRepository _repository;
     private readonly IArchiver _archiver;
+    private readonly string _path;
 
-    public SplitStorageAdapter(List<IStorage> storages, IRepository repository, IArchiver archiver)
+    public SplitStorageAdapter(List<IStorage> storages, IRepository repository, IArchiver archiver, string path)
     {
         _storages = storages;
         _repository = repository;
         _archiver = archiver;
+        _path = path;
     }
 
     public IStorageLifeTime CreateStorageLifeTime()
@@ -25,7 +27,7 @@ public class SplitStorageAdapter : IStorage
             repoObjects.AddRange(obj.CreateStorageLifeTime().RepoObjects);
         }
 
-        Stream stream = _repository.OpenWrite(Path.Combine($"{_repository.Path.PathName}", $"{DateTime.Now:yyyy-dd-M--HH-mm-ss}.zip"));
-        return _archiver.DoArchive(repoObjects, stream, _repository).CreateStorageLifeTime();
+        Stream stream = _repository.OpenWrite(Path.Combine(_path, $"{DateTime.Now:yyyy-dd-M--HH-mm-ss}.zip"));
+        return _archiver.DoArchive(repoObjects, stream, _repository, _path).CreateStorageLifeTime();
     }
 }

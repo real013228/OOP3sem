@@ -41,4 +41,10 @@ public class Repository : IRepository
     {
         return File.Open(path, FileMode.Create);
     }
+
+    public string CreateDirectory(string name)
+    {
+        Directory.CreateDirectory(System.IO.Path.Combine($"{Path.PathName}", $"{name}"));
+        return System.IO.Path.Combine($"{Path.PathName}", $"{name}");
+    }
 }

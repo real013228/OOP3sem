@@ -18,8 +18,8 @@ public class RestorePoint
     public IReadOnlyCollection<BackupObject> BackupObjects => _backupObjects;
     public DateTime CreationDate { get; }
 
-    public IStorage DoSnapshot(IStorageAlgorithm algorithm, IRepository repository, IArchiver archiver)
+    public IStorage DoSnapshot(IStorageAlgorithm algorithm, IRepository repository, IArchiver archiver, string path)
     {
-        return algorithm.CreateStorage(_backupObjects, repository, archiver);
+        return algorithm.CreateStorage(_backupObjects, repository, archiver, path);
     }
 }
