@@ -47,4 +47,9 @@ public class Repository : IRepository
         Directory.CreateDirectory(System.IO.Path.Combine($"{Path.PathName}", $"{name}"));
         return System.IO.Path.Combine($"{Path.PathName}", $"{name}");
     }
+
+    public int ChildrenCount(string path)
+    {
+        return Directory.EnumerateFileSystemEntries(path).Count();
+    }
 }
