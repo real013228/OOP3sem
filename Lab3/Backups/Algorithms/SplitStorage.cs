@@ -12,7 +12,7 @@ public class SplitStorage : IStorageAlgorithm
         {
             var repoObjs = new List<IRepoObject> { repository.GetRepoObject(obj.Descriptor) };
             Stream stream =
-                repository.OpenWrite(Path.Combine(
+                repository.OpenWrite(IRepository.PathCombine(
                     path,
                     $"{IRepository.GetFileName(obj.Descriptor.PathName)}{DateTime.Now:yyyy-dd-M--HH-mm-ss}.zip"));
             storages.Add(archiver.DoArchive(repoObjs, stream, repository, path));
