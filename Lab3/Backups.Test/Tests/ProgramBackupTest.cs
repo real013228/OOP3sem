@@ -11,7 +11,7 @@ public static class ProgramBackupTest
     {
         var repository = new Repository(@"C:\Users\real0\OneDrive\real013228\Lab3");
 
-        var algo = new SplitStorage();
+        var algo = new SingleStorage();
 
         // var algo = new SingleStorage();
         var archiver = new ZipArchiver();
@@ -19,6 +19,7 @@ public static class ProgramBackupTest
 
         backupTask.AddBackupObject(new BackupObject(@"Test"));
         backupTask.AddBackupObject(new BackupObject(@"MegaTest2"));
+        backupTask.AddBackupObject(new BackupObject(@"asasas.txt"));
         backupTask.DoJob();
     }
 }

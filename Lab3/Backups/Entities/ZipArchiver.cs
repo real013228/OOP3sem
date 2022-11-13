@@ -14,8 +14,9 @@ public class ZipArchiver : IArchiver
         _forest = new List<IRepoObject>();
     }
 
-    public IStorage DoArchive(IReadOnlyCollection<IRepoObject> objects, Stream stream, IRepository repository, string path)
+    public IStorage DoArchive(IReadOnlyCollection<IRepoObject> objects,  IRepository repository, string path)
     {
+        Stream stream = repository.OpenWrite(path);
         using var archive = new ZipArchive(stream, ZipArchiveMode.Create);
         var visitor = new ZipVisitor(archive);
         foreach (IRepoObject obj in objects)
