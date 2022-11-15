@@ -27,6 +27,6 @@ public class SplitStorageAdapter : IStorage
             repoObjects.AddRange(obj.CreateStorageLifeTime().RepoObjects);
         }
 
-        return _archiver.DoArchive(repoObjects, _repository, IRepository.PathCombine(_path, $"{DateTime.Now:yyyy-dd-M--HH-mm-ss}.zip")).CreateStorageLifeTime();
+        return _archiver.DoArchive(repoObjects, _repository, MyPath.PathCombine(_path, $"{DateTime.Now:yyyy-dd-M--HH-mm-ss}.zip")).CreateStorageLifeTime();
     }
 }

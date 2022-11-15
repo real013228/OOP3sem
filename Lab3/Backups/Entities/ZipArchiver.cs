@@ -26,8 +26,8 @@ public class ZipArchiver : IArchiver
 
         // return new ZipStorage(new MyPath(" "), new ZipFolder(new List<IZipObject>(), " "), new Repository(" "));
         return new ZipStorage(
-            new MyPath(IRepository.PathCombine(path, $"{DateTime.Now:yyyy-dd-M--HH-mm-ss}.zip")),
-            new ZipFolder(visitor.Top, IRepository.PathCombine(path, $@"{DateTime.Now:yyyy-dd-M--HH-mm-ss}.zip")),
+            new MyPath(MyPath.PathCombine(path, $"{DateTime.Now:yyyy-dd-M--HH-mm-ss}.zip")),
+            new ZipFolder(visitor.Top, MyPath.PathCombine(path, $@"{DateTime.Now:yyyy-dd-M--HH-mm-ss}.zip")),
             repository);
     }
 }
