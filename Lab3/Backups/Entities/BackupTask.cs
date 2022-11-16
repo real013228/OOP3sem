@@ -10,12 +10,13 @@ public class BackupTask : IBackupTask
     private readonly IRepository _repository;
     private readonly IStorageAlgorithm _algorithm;
     private readonly IArchiver _archiver;
-    private Collection<BackupObject> _objects;
+    private readonly List<BackupObject> _objects;
+    private readonly IBackup _backup;
 
     public BackupTask(IRepository repository, IStorageAlgorithm algorithm, IArchiver archiver, string name)
     {
-        _objects = new Collection<BackupObject>();
-        Backup = new Backup();
+        _objects = new List<BackupObject>();
+        _backup = new Backup();
         _algorithm = algorithm;
         _archiver = archiver;
         Name = new MyPath(name);
@@ -23,12 +24,7 @@ public class BackupTask : IBackupTask
     }
 
     public MyPath Name { get; }
-    public IBackup Backup { get; }
-
-    public void SetBackupObjects(Collection<BackupObject> objects)
-    {
-        _objects = objects;
-    }
+    public IEnumerable<RestorePoint> RestorePoints => _backup.RestorePoints;
 
     public void AddBackupObject(BackupObject obj)
     {
@@ -53,8 +49,8 @@ public class BackupTask : IBackupTask
     public RestorePoint DoJob()
     {
         var restorePoint = new RestorePoint(_objects);
-        Backup.AddRestorePoint(restorePoint);
-        restorePoint.DoSnapshot(_algorithm, _repository, _archiver, _repository.CreateDirectory(Name.PathName));
+        _backup.AddRestorePoint(restorePoint);
+        _algorithm.CreateStorage(_objects, _repository, _archiver, _repository.CreateDirectory(Name.PathName));
         return restorePoint;
     }
 }

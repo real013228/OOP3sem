@@ -8,8 +8,8 @@ public class BackupObject
 {
     public BackupObject(string descriptor)
     {
-        Descriptor = new MyPath(descriptor);
+        Descriptor = descriptor;
     }
 
-    public MyPath Descriptor { get; }
+    public string Descriptor { get; }
 }

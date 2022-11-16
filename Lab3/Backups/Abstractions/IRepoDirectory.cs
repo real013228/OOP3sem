@@ -2,5 +2,5 @@
 
 public interface IRepoDirectory : IRepoObject
 {
-    public Func<IEnumerable<IRepoObject>> Components { get; }
+    public IEnumerable<IRepoObject> Components();
 }

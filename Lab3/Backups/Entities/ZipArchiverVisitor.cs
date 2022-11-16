@@ -25,7 +25,7 @@ public class ZipVisitor : IVisitor
     {
         ZipArchiveEntry newZip = _stack.Peek().CreateEntry($@"{Path.GetFileName(obj.Name.PathName)}");
         Stream stream = newZip.Open();
-        Stream stream2 = obj.RepoObjStream.Invoke();
+        Stream stream2 = obj.RepoObjStream();
         stream2.CopyTo(stream);
         var zipFile = new ZipFile($@"{Path.GetFileName(obj.Name.PathName)}");
         _otherStack.Peek().Add(zipFile);
@@ -40,7 +40,7 @@ public class ZipVisitor : IVisitor
         using var newZip = new ZipArchive(stream, ZipArchiveMode.Create);
         _stack.Push(newZip);
         _otherStack.Push(new List<IZipObject>());
-        foreach (IRepoObject child in obj.Components.Invoke())
+        foreach (IRepoObject child in obj.Components())
         {
             child.Accept(this);
         }

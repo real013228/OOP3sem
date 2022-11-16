@@ -11,10 +11,10 @@ public class SplitStorage : IStorageAlgorithm
         var storages = new List<IStorage>();
         foreach (BackupObject obj in objects)
         {
-            var repoObjs = new List<IRepoObject> { repository.GetRepoObject(obj.Descriptor) };
+            var repoObjs = new List<IRepoObject> { repository.GetRepoObject(new MyPath(obj.Descriptor)) };
             storages.Add(archiver.DoArchive(repoObjs, repository, MyPath.PathCombine(
                 path,
-                $"{MyPath.GetFileName(obj.Descriptor.PathName)}{DateTime.Now:yyyy-dd-M--HH-mm-ss}.zip")));
+                $"{MyPath.GetFileName(obj.Descriptor)}{DateTime.Now:yyyy-dd-M--HH-mm-ss}.zip")));
         }
 
         var adapter = new SplitStorageAdapter(storages, repository, archiver, path);

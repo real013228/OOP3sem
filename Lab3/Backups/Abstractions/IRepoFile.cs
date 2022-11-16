@@ -2,5 +2,5 @@
 
 public interface IRepoFile : IRepoObject
 {
-    public Func<Stream> RepoObjStream { get; }
+    public Stream RepoObjStream();
 }

@@ -31,7 +31,7 @@ public class BackupTest : IDisposable
         task.DoJob();
         task.RemoveBackupObject(_obj1);
         task.DoJob();
-        Assert.Equal(2, task.Backup.RestorePoints.Count);
+        Assert.Equal(2, task.RestorePoints.Count());
     }
 
     public void Dispose()

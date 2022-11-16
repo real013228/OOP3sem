@@ -26,13 +26,11 @@ public class Repository : IRepository
         if (!Directory.Exists($@"{Path.PathName}\{path.PathName}")) throw new NullReferenceException();
         var info = new DirectoryInfo($@"{Path.PathName}\{path.PathName}");
 
-        // var list = new List<IRepoObject>();
-        // foreach (var dir in info.GetFileSystemInfos())
-        // {
-        //     list.Add(GetRepoObject(new MyPath($@"{path.PathName}\{dir.Name}")));
-        // }
-        var list = info.GetFileSystemInfos().Select(dir => GetRepoObject(new MyPath($@"{path.PathName}\{dir.Name}")))
+        var list = info
+            .GetFileSystemInfos()
+            .Select(dir => GetRepoObject(new MyPath($@"{path.PathName}\{dir.Name}")))
             .ToList();
+
         IEnumerable<IRepoObject> Func() => list as IEnumerable<IRepoObject>;
         return new RepoFolder(System.IO.Path.GetFileName(path.PathName), Func);
     }

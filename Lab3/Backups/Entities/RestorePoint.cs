@@ -7,9 +7,9 @@ namespace Backups.Entities;
 
 public class RestorePoint
 {
-    private readonly Collection<BackupObject> _backupObjects;
+    private readonly List<BackupObject> _backupObjects;
 
-    public RestorePoint(Collection<BackupObject> backupObjects)
+    public RestorePoint(List<BackupObject> backupObjects)
     {
         _backupObjects = backupObjects;
         CreationDate = DateTime.Now;
@@ -17,9 +17,4 @@ public class RestorePoint
 
     public IReadOnlyCollection<BackupObject> BackupObjects => _backupObjects;
     public DateTime CreationDate { get; }
-
-    public IStorage DoSnapshot(IStorageAlgorithm algorithm, IRepository repository, IArchiver archiver, string path)
-    {
-        return algorithm.CreateStorage(_backupObjects, repository, archiver, path);
-    }
 }

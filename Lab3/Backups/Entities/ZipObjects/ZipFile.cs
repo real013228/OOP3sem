@@ -13,10 +13,6 @@ public class ZipFile : IZipObject
     }
 
     public MyPath Name { get; }
-
     public IRepoObject CreateRepoObject(ZipArchiveEntry zipArchiveEntry)
-    {
-        var func = new Func<Stream>(zipArchiveEntry.Open);
-        return new RepoFile(zipArchiveEntry.Name, func);
-    }
+        => new RepoFile(zipArchiveEntry.Name, zipArchiveEntry.Open);
 }
