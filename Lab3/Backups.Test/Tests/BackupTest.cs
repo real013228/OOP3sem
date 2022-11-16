@@ -25,7 +25,7 @@ public class BackupTest : IDisposable
         _repository.FileSystem.CreateDirectory(@"/mnt/c/TestPath/Task2/");
         _repository.FileSystem.OpenFile(@"/mnt/c/TestPath/Test/FileGayws", FileMode.Create, FileAccess.ReadWrite)
             .Close();
-        var task = new BackupTask(_repository, _algorithm, _archiver, "Task2");
+        var task = new BackupTask(new Backup(), _repository, _algorithm, _archiver, "Task2");
         task.AddBackupObject(obj1);
         task.AddBackupObject(obj2);
         task.DoJob();

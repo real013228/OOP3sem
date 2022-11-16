@@ -15,7 +15,7 @@ public static class ProgramBackupTest
 
         // var algo = new SingleStorage();
         var archiver = new ZipArchiver();
-        var backupTask = new BackupTask(repository, algo, archiver, "Task1");
+        var backupTask = new BackupTask(new Backup(), repository, algo, archiver, "Task1");
 
         backupTask.AddBackupObject(new BackupObject(@"Test", repository));
         backupTask.AddBackupObject(new BackupObject(@"MegaTest2", repository));

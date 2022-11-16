@@ -13,10 +13,10 @@ public class BackupTask : IBackupTask
     private readonly List<BackupObject> _objects;
     private readonly IBackup _backup;
 
-    public BackupTask(IRepository repository, IStorageAlgorithm algorithm, IArchiver archiver, string name)
+    public BackupTask(IBackup backup, IRepository repository, IStorageAlgorithm algorithm, IArchiver archiver, string name)
     {
         _objects = new List<BackupObject>();
-        _backup = new Backup();
+        _backup = backup;
         _algorithm = algorithm;
         _archiver = archiver;
         Name = new MyPath(name);
