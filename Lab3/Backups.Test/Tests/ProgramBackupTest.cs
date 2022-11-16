@@ -17,9 +17,9 @@ public static class ProgramBackupTest
         var archiver = new ZipArchiver();
         var backupTask = new BackupTask(repository, algo, archiver, "Task1");
 
-        backupTask.AddBackupObject(new BackupObject(@"Test"));
-        backupTask.AddBackupObject(new BackupObject(@"MegaTest2"));
-        backupTask.AddBackupObject(new BackupObject(@"asasas.txt"));
+        backupTask.AddBackupObject(new BackupObject(@"Test", repository));
+        backupTask.AddBackupObject(new BackupObject(@"MegaTest2", repository));
+        backupTask.AddBackupObject(new BackupObject(@"asasas.txt", repository));
         backupTask.DoJob();
     }
 }
