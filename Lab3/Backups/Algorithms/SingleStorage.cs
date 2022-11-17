@@ -5,10 +5,18 @@ using Backups.Models;
 
 namespace Backups.Algorithms;
 
-public class SingleStorage : IStorageAlgorithm
+public class SingleStorage<TArchiver> : IStorageAlgorithm
+    where TArchiver : IArchiver
 {
-    public IStorage CreateStorage(IReadOnlyCollection<IRepoObject> objects, IRepository repository, IArchiver archiver, string path)
+    private readonly TArchiver _archiver;
+
+    public SingleStorage(TArchiver archiver)
     {
-        return archiver.DoArchive(objects, repository, MyPath.PathCombine(path, $@"{DateTime.Now:yyyy-dd-M--HH-mm}.zip"));
+        _archiver = archiver;
+    }
+
+    public IStorage CreateStorage(IReadOnlyCollection<IRepoObject> objects, IRepository repository, string path)
+    {
+        return _archiver.DoArchive(objects, repository, MyPath.PathCombine(path, $@"{DateTime.Now:yyyy-dd-M--HH-mm}.zip"));
     }
 }

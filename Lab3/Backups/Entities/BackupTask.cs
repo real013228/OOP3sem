@@ -10,16 +10,14 @@ public class BackupTask : IBackupTask
 {
     private readonly IRepository _repository;
     private readonly IStorageAlgorithm _algorithm;
-    private readonly IArchiver _archiver;
     private readonly List<BackupObject> _objects;
     private readonly IBackup _backup;
 
-    public BackupTask(IBackup backup, IRepository repository, IStorageAlgorithm algorithm, IArchiver archiver, string name)
+    public BackupTask(IBackup backup, IRepository repository, IStorageAlgorithm algorithm, string name)
     {
         _objects = new List<BackupObject>();
         _backup = backup;
         _algorithm = algorithm;
-        _archiver = archiver;
         Name = new MyPath(name);
         _repository = repository;
     }
@@ -50,7 +48,7 @@ public class BackupTask : IBackupTask
     public RestorePoint DoJob()
     {
         var objects = _objects.Select(obj => _repository.GetRepoObject(new MyPath(obj.Descriptor))).ToList();
-        var restorePoint = new RestorePoint(_objects, _algorithm.CreateStorage(objects, _repository, _archiver, _repository.CreateDirectory(MyPath.PathCombine(Name.PathName, $"{DateTime.Now:yyyy-dd-M--HH-mm-ss}"))));
+        var restorePoint = new RestorePoint(_objects, _algorithm.CreateStorage(objects, _repository, _repository.CreateDirectory(MyPath.PathCombine(Name.PathName, $"{DateTime.Now:yyyy-dd-M--HH-mm-ss}"))));
         _backup.AddRestorePoint(restorePoint);
         return restorePoint;
     }
