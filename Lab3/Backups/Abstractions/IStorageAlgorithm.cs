@@ -4,5 +4,5 @@ namespace Backups.Abstractions;
 
 public interface IStorageAlgorithm
 {
-    public IStorage CreateStorage(IReadOnlyCollection<BackupObject> objects, IRepository repository, IArchiver archiver, string path);
+    public IStorage CreateStorage(IReadOnlyCollection<IRepoObject> objects, IRepository repository, IArchiver archiver, string path);
 }

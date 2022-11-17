@@ -49,7 +49,8 @@ public class BackupTask : IBackupTask
 
     public RestorePoint DoJob()
     {
-        var restorePoint = new RestorePoint(_objects, _algorithm.CreateStorage(_objects, _repository, _archiver, _repository.CreateDirectory(MyPath.PathCombine(Name.PathName, $"{DateTime.Now:yyyy-dd-M--HH-mm-ss}"))));
+        var objects = _objects.Select(obj => _repository.GetRepoObject(new MyPath(obj.Descriptor))).ToList();
+        var restorePoint = new RestorePoint(_objects, _algorithm.CreateStorage(objects, _repository, _archiver, _repository.CreateDirectory(MyPath.PathCombine(Name.PathName, $"{DateTime.Now:yyyy-dd-M--HH-mm-ss}"))));
         _backup.AddRestorePoint(restorePoint);
         return restorePoint;
     }
