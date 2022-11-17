@@ -11,11 +11,10 @@ public static class ProgramBackupTest
     {
         var repository = new Repository(@"C:\Users\real0\OneDrive\real013228\Lab3");
 
-        var algo = new SingleStorage();
-
         // var algo = new SingleStorage();
+        var algo = new SplitStorage();
         var archiver = new ZipArchiver();
-        var backupTask = new BackupTask(new Backup(), repository, algo, archiver, "Task1");
+        var backupTask = new BackupTask(new Backup(), repository, algo, archiver, "TaskFinalSplit");
 
         backupTask.AddBackupObject(new BackupObject(@"Test", repository));
         backupTask.AddBackupObject(new BackupObject(@"MegaTest2", repository));

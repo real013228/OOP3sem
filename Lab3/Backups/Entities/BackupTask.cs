@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Reflection.Metadata.Ecma335;
 using Backups.Abstractions;
 using Backups.Algorithms;
 using Backups.Models;
@@ -48,9 +49,8 @@ public class BackupTask : IBackupTask
 
     public RestorePoint DoJob()
     {
-        var restorePoint = new RestorePoint(_objects);
+        var restorePoint = new RestorePoint(_objects, _algorithm.CreateStorage(_objects, _repository, _archiver, _repository.CreateDirectory(MyPath.PathCombine(Name.PathName, $"{DateTime.Now:yyyy-dd-M--HH-mm-ss}"))));
         _backup.AddRestorePoint(restorePoint);
-        _algorithm.CreateStorage(_objects, _repository, _archiver, _repository.CreateDirectory(Name.PathName));
         return restorePoint;
     }
 }
