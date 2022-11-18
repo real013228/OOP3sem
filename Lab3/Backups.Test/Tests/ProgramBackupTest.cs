@@ -21,6 +21,6 @@ public static class ProgramBackupTest
         backupTask.AddBackupObject(new BackupObject(@"Test", repository));
         backupTask.AddBackupObject(new BackupObject(@"MegaTest2", repository));
         backupTask.AddBackupObject(new BackupObject(@"asasas.txt", repository));
-        backupTask.DoJob();
+        backupTask.DoJob(DateTime.Now);
     }
 }

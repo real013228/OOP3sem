@@ -9,11 +9,11 @@ public class RestorePoint
 {
     private readonly List<BackupObject> _backupObjects;
 
-    public RestorePoint(List<BackupObject> backupObjects, IStorage storage)
+    public RestorePoint(List<BackupObject> backupObjects, IStorage storage, DateTime time)
     {
         _backupObjects = backupObjects;
         Storage = storage;
-        CreationDate = DateTime.Now;
+        CreationDate = time;
         Id = Guid.NewGuid();
     }
 

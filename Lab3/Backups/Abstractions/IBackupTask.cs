@@ -10,5 +10,5 @@ public interface IBackupTask
     public IEnumerable<RestorePoint> RestorePoints { get; }
     public void AddBackupObject(BackupObject obj);
     public void RemoveBackupObject(BackupObject obj);
-    public RestorePoint DoJob();
+    public RestorePoint DoJob(DateTime time);
 }

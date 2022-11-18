@@ -48,10 +48,10 @@ public class BackupTask : IBackupTask
         _log = $"Backup object {MyPath.GetFileName(obj.Descriptor)} has been removed\n";
     }
 
-    public RestorePoint DoJob()
+    public RestorePoint DoJob(DateTime time)
     {
         var objects = _objects.Select(obj => _repository.GetRepoObject(new MyPath(obj.Descriptor))).ToList();
-        var restorePoint = new RestorePoint(_objects, _algorithm.CreateStorage(objects, _repository, _repository.CreateDirectory(MyPath.PathCombine(Name.PathName, $"{DateTime.Now:yyyy-dd-M--HH-mm-ss}"))));
+        var restorePoint = new RestorePoint(_objects, _algorithm.CreateStorage(objects, _repository, _repository.CreateDirectory(MyPath.PathCombine(Name.PathName, $"{DateTime.Now:yyyy-dd-M--HH-mm-ss}"))), time);
         _backup.AddRestorePoint(restorePoint);
         _log = $"Restore point {MyPath.GetFileName(restorePoint.CreationDate.ToString())} has been created\n";
         _log += $"{_algorithm.ToString()}\n";

@@ -28,9 +28,9 @@ public class BackupTest : IDisposable
         var task = new BackupTask(new Backup(), _repository, algorithm, "Task2");
         task.AddBackupObject(obj1);
         task.AddBackupObject(obj2);
-        task.DoJob();
+        task.DoJob(DateTime.Now);
         task.RemoveBackupObject(obj1);
-        task.DoJob();
+        task.DoJob(DateTime.Now);
         Assert.Equal(2, task.RestorePoints.Count());
     }
 
