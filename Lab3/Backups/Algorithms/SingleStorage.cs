@@ -17,6 +17,6 @@ public class SingleStorage<TArchiver> : IStorageAlgorithm
 
     public IStorage CreateStorage(IReadOnlyCollection<IRepoObject> objects, IRepository repository, string path)
     {
-        return _archiver.DoArchive(objects, repository, MyPath.PathCombine(path, $@"{DateTime.Now:yyyy-dd-M--HH-mm}.zip"));
+        return _archiver.DoArchive(objects, repository, path);
     }
 }

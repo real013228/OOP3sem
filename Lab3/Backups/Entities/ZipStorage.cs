@@ -18,6 +18,7 @@ public class ZipStorage : IStorage
     public MyPath Path { get; }
 
     public ZipFolder Storages { get; }
+    public IRepository Repository => _repository;
 
     public IStorageLifeTime CreateStorageLifeTime()
     {

@@ -23,11 +23,11 @@ public class ZipVisitor : IVisitor
 
     public void Visit(IRepoFile obj)
     {
-        ZipArchiveEntry newZip = _stack.Peek().CreateEntry($@"{Path.GetFileName(obj.Name.PathName)}");
+        ZipArchiveEntry newZip = _stack.Peek().CreateEntry($@"{obj.Name.PathName}");
         Stream stream = newZip.Open();
         Stream stream2 = obj.RepoObjStream();
         stream2.CopyTo(stream);
-        var zipFile = new ZipFile($@"{Path.GetFileName(obj.Name.PathName)}");
+        var zipFile = new ZipFile($@"{obj.Name.PathName}");
         _otherStack.Peek().Add(zipFile);
         stream2.Dispose();
         stream.Dispose();
@@ -36,7 +36,7 @@ public class ZipVisitor : IVisitor
     public void Visit(IRepoDirectory obj)
     {
         Stream stream = _stack.Peek()
-            .CreateEntry($@"{Path.GetFileName(obj.Name.PathName)}{DateTime.Now:yyyy-dd-M--HH-mm-ss}.zip").Open();
+            .CreateEntry($@"{obj.Name.PathName}.zip").Open();
         using var newZip = new ZipArchive(stream, ZipArchiveMode.Create);
         _stack.Push(newZip);
         _otherStack.Push(new List<IZipObject>());
@@ -47,7 +47,7 @@ public class ZipVisitor : IVisitor
 
         var zipFolder = new ZipFolder(
             _otherStack.Pop(),
-            Path.Combine($@"{Path.GetFileName(obj.Name.PathName)}{DateTime.Now:yyyy-dd-M--HH-mm-ss}.zip"));
+            Path.Combine($@"{obj.Name.PathName}"));
         _otherStack.Peek().Add(zipFolder);
         _stack.Pop();
     }

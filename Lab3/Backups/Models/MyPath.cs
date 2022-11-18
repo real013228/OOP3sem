@@ -22,7 +22,7 @@ public class MyPath
 
     public static string PathCombine(string str1, string str2)
     {
-        UPath ans = System.IO.Path.Combine(str1, str2);
-        return ans.ToString();
+        string ans = Path.Combine(str1, str2);
+        return ans;
     }
 }

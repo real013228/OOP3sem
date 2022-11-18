@@ -20,9 +20,7 @@ public class SplitStorage<TArchiver> : IStorageAlgorithm
         foreach (var obj in objects)
         {
             var repoObjs = new List<IRepoObject> { obj };
-            storages.Add(_archiver.DoArchive(repoObjs, repository, MyPath.PathCombine(
-                path,
-                $"{MyPath.GetFileName(obj.Name.PathName)}{DateTime.Now:yyyy-dd-M--HH-mm-ss}.zip")));
+            storages.Add(_archiver.DoArchive(repoObjs, repository, path));
         }
 
         var adapter = new SplitStorageAdapter(storages, repository, _archiver, path);
