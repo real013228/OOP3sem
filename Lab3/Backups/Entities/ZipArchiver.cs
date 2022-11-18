@@ -21,7 +21,7 @@ public class ZipArchiver : IArchiver
         string archName = MyPath.PathCombine($"{path}", $"{Guid.NewGuid()}.zip");
         Stream stream = repository.OpenWrite(archName);
         using var archive = new ZipArchive(stream, ZipArchiveMode.Create);
-        var visitor = new ZipVisitor(archive);
+        var visitor = new ZipArchiverVisitor(archive);
         _log = string.Empty;
         foreach (IRepoObject obj in objects)
         {

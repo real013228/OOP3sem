@@ -19,8 +19,8 @@ public class RepoFile : IRepoFile
         return _repoObjStream();
     }
 
-    public void Accept(IVisitor visitor)
+    public void Accept(IArchiverVisitor archiverVisitor)
     {
-        visitor.Visit(this);
+        archiverVisitor.Visit(this);
     }
 }

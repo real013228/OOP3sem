@@ -6,12 +6,12 @@ using ZipFile = Backups.Entities.ZipObjects.ZipFile;
 
 namespace Backups.Entities;
 
-public class ZipVisitor : IVisitor
+public class ZipArchiverVisitor : IArchiverVisitor
 {
     private readonly Stack<ZipArchive> _stack;
     private readonly Stack<List<IZipObject>> _otherStack;
 
-    public ZipVisitor(ZipArchive archive)
+    public ZipArchiverVisitor(ZipArchive archive)
     {
         _stack = new Stack<ZipArchive>();
         _stack.Push(archive);

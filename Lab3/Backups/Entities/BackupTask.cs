@@ -12,7 +12,7 @@ public class BackupTask : IBackupTask
     private readonly IStorageAlgorithm _algorithm;
     private readonly List<BackupObject> _objects;
     private readonly IBackup _backup;
-    private string _log;
+
     public BackupTask(IBackup backup, IRepository repository, IStorageAlgorithm algorithm, string name)
     {
         _objects = new List<BackupObject>();
@@ -20,7 +20,6 @@ public class BackupTask : IBackupTask
         _algorithm = algorithm;
         Name = new MyPath(name);
         _repository = repository;
-        _log = string.Empty;
     }
 
     public MyPath Name { get; }
@@ -34,7 +33,6 @@ public class BackupTask : IBackupTask
         }
 
         _objects.Add(obj);
-        _log = $"Backup object {MyPath.GetFileName(obj.Descriptor)} has been added\n";
     }
 
     public void RemoveBackupObject(BackupObject obj)
@@ -45,22 +43,14 @@ public class BackupTask : IBackupTask
         }
 
         _objects.Remove(obj);
-        _log = $"Backup object {MyPath.GetFileName(obj.Descriptor)} has been removed\n";
     }
 
     public RestorePoint DoJob(DateTime time)
     {
         var objects = _objects.Select(obj => _repository.GetRepoObject(new MyPath(obj.Descriptor))).ToList();
-        var restorePointName = $"{DateTime.Now:yyyy-dd-M--HH-mm-ss}";
-        var restorePoint = new RestorePoint(new List<BackupObject>(_objects), _algorithm.CreateStorage(objects, _repository, _repository.CreateDirectory(MyPath.PathCombine(Name.PathName, restorePointName))), time, restorePointName);
+        string restorePointName = $"{DateTime.Now:yyyy-dd-M--HH-mm-ss}";
+        var restorePoint = new RestorePoint(_objects, _algorithm.CreateStorage(objects, _repository, _repository.CreateDirectory(MyPath.PathCombine(Name.PathName, restorePointName))), time, restorePointName);
         _backup.AddRestorePoint(restorePoint);
-        _log = $"Restore point {MyPath.GetFileName(restorePoint.CreationDate.ToString())} has been created\n";
-        _log += $"{_algorithm.ToString()}\n";
         return restorePoint;
-    }
-
-    public override string ToString()
-    {
-        return _log;
     }
 }
