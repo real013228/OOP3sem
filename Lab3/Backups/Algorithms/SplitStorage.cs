@@ -8,10 +8,12 @@ public class SplitStorage<TArchiver> : IStorageAlgorithm
     where TArchiver : IArchiver
 {
     private readonly TArchiver _archiver;
+    private string _log;
 
     public SplitStorage(TArchiver archiver)
     {
         _archiver = archiver;
+        _log = string.Empty;
     }
 
     public IStorage CreateStorage(IReadOnlyCollection<IRepoObject> objects, IRepository repository, string path)
@@ -20,10 +22,17 @@ public class SplitStorage<TArchiver> : IStorageAlgorithm
         foreach (var obj in objects)
         {
             var repoObjs = new List<IRepoObject> { obj };
-            storages.Add(_archiver.DoArchive(repoObjs, repository, path));
+            IStorage storage = _archiver.DoArchive(repoObjs, repository, path);
+            storages.Add(storage);
+            _log = $"Split storage algorithm give objects away to archiver: {_archiver.ToString()}";
         }
 
         var adapter = new SplitStorageAdapter(storages, repository, _archiver, path);
         return adapter;
+    }
+
+    public override string ToString()
+    {
+        return _log;
     }
 }
