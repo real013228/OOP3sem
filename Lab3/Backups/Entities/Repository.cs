@@ -25,14 +25,12 @@ public class Repository : IRepository
 
         if (!Directory.Exists($@"{Path.PathName}\{path.PathName}")) throw new NullReferenceException();
         var info = new DirectoryInfo($@"{Path.PathName}\{path.PathName}");
-
-        var list = info
-            .GetFileSystemInfos()
-            .Select(dir => GetRepoObject(new MyPath($@"{path.PathName}\{dir.Name}")))
-            .ToList();
-
-        IEnumerable<IRepoObject> Func() => list as IEnumerable<IRepoObject>;
-        return new RepoFolder(System.IO.Path.GetFileName(path.PathName), Func);
+        var func = new Func<IEnumerable<IRepoObject>>(
+            () => info
+                .GetFileSystemInfos()
+                .Select(dir => GetRepoObject(new MyPath($@"{path.PathName}\{dir.Name}")))
+                .ToList());
+        return new RepoFolder(System.IO.Path.GetFileName(path.PathName), func);
     }
 
     public Stream OpenWrite(string path)

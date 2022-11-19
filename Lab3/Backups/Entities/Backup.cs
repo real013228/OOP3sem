@@ -6,14 +6,14 @@ namespace Backups.Entities;
 
 public class Backup : IBackup
 {
-    private readonly Collection<RestorePoint> _restorePoints;
+    private readonly List<RestorePoint> _restorePoints;
 
     public Backup()
     {
-        _restorePoints = new Collection<RestorePoint>();
+        _restorePoints = new List<RestorePoint>();
     }
 
-    public IReadOnlyCollection<RestorePoint> RestorePoints => _restorePoints;
+    public IReadOnlyList<RestorePoint> RestorePoints => _restorePoints;
 
     public void AddRestorePoint(RestorePoint restorePoint)
     {

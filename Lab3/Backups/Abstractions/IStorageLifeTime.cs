@@ -2,5 +2,5 @@
 
 public interface IStorageLifeTime : IDisposable
 {
-    public IReadOnlyCollection<IRepoObject> RepoObjects { get; }
+    public IReadOnlyList<IRepoObject> RepoObjects { get; }
 }

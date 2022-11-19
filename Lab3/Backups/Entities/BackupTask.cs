@@ -1,7 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.Reflection.Metadata.Ecma335;
-using Backups.Abstractions;
-using Backups.Algorithms;
+﻿using Backups.Abstractions;
 using Backups.Models;
 
 namespace Backups.Entities;
@@ -12,12 +9,13 @@ public class BackupTask : IBackupTask
     private readonly IStorageAlgorithm _algorithm;
     private readonly List<BackupObject> _objects;
     private readonly IBackup _backup;
-
-    public BackupTask(IBackup backup, IRepository repository, IStorageAlgorithm algorithm, string name)
+    private readonly IDateTimeProvider _time;
+    public BackupTask(IBackup backup, IRepository repository, IStorageAlgorithm algorithm, string name, IDateTimeProvider time)
     {
         _objects = new List<BackupObject>();
         _backup = backup;
         _algorithm = algorithm;
+        _time = time;
         Name = new MyPath(name);
         _repository = repository;
     }
@@ -45,11 +43,14 @@ public class BackupTask : IBackupTask
         _objects.Remove(obj);
     }
 
-    public RestorePoint DoJob(DateTime time)
+    public RestorePoint DoJob()
     {
         var objects = _objects.Select(obj => _repository.GetRepoObject(new MyPath(obj.Descriptor))).ToList();
         string restorePointName = $"{DateTime.Now:yyyy-dd-M--HH-mm-ss}";
-        var restorePoint = new RestorePoint(_objects, _algorithm.CreateStorage(objects, _repository, _repository.CreateDirectory(MyPath.PathCombine(Name.PathName, restorePointName))), time, restorePointName);
+        string pathName = MyPath.PathCombine(Name.PathName, restorePointName);
+        string path = _repository.CreateDirectory(pathName);
+        IStorage storage = _algorithm.CreateStorage(objects, _repository, path);
+        var restorePoint = new RestorePoint(_objects, storage, _time.GetTime(), restorePointName);
         _backup.AddRestorePoint(restorePoint);
         return restorePoint;
     }

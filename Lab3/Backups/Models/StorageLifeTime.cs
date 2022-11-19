@@ -5,12 +5,12 @@ namespace Backups.Models;
 
 public class StorageLifeTime : IStorageLifeTime
 {
-    public StorageLifeTime(IReadOnlyCollection<IRepoObject> repoObjects)
+    public StorageLifeTime(IReadOnlyList<IRepoObject> repoObjects)
     {
         RepoObjects = repoObjects;
     }
 
-    public IReadOnlyCollection<IRepoObject> RepoObjects { get; }
+    public IReadOnlyList<IRepoObject> RepoObjects { get; }
 
     public void Dispose()
     {

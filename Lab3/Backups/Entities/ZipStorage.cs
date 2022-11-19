@@ -25,14 +25,8 @@ public class ZipStorage : IStorage
         return new StorageLifeTime(GetRepoObjects());
     }
 
-    private IReadOnlyCollection<IRepoObject> GetRepoObjects()
+    private IReadOnlyList<IRepoObject> GetRepoObjects()
     {
-        var collection = new Collection<IRepoObject>();
-        foreach (IZipObject obj in Storages.Children)
-        {
-            collection.Add(_repository.GetRepoObject(obj.Name));
-        }
-
-        return collection;
+        return Storages.Children.Select(obj => _repository.GetRepoObject(obj.Name)).ToList();
     }
 }

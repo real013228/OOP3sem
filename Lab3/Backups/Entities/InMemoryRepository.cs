@@ -30,10 +30,15 @@ public class InMemoryRepository : IRepository
         if (!FileSystem.DirectoryExists(path.PathName)) throw new NullReferenceException();
 
         var info = new DirectoryEntry(FileSystem, path.PathName);
-        var list = info.EnumerateEntries().Select(dir => GetRepoObject(new MyPath(MyPath.PathCombine($@"{path.PathName}", $@"{dir.Name}"))))
-            .ToList();
-        IEnumerable<IRepoObject> Func() => list as IEnumerable<IRepoObject>;
-        return new RepoFolder(path.PathName, Func);
+
+        var func = new Func<IEnumerable<IRepoObject>>(() =>
+        {
+            return info
+                .EnumerateEntries()
+                .Select(dir => GetRepoObject(new MyPath(MyPath.PathCombine($@"{path.PathName}", $@"{dir.Name}"))));
+        });
+
+        return new RepoFolder(path.PathName, func);
     }
 
     public Stream OpenWrite(string path)

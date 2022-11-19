@@ -25,12 +25,13 @@ public class BackupTest : IDisposable
         _repository.FileSystem.CreateDirectory(@"/mnt/c/TestPath/Task2/");
         _repository.FileSystem.OpenFile(@"/mnt/c/TestPath/Test/FileGayws", FileMode.Create, FileAccess.ReadWrite)
             .Close();
-        var task = new BackupTask(new Backup(), _repository, algorithm, "Task2");
+        IDateTimeProvider provider = new DateTimeProvider();
+        var task = new BackupTask(new Backup(), _repository, algorithm, "Task2", provider);
         task.AddBackupObject(obj1);
         task.AddBackupObject(obj2);
-        task.DoJob(DateTime.Now);
+        task.DoJob();
         task.RemoveBackupObject(obj1);
-        task.DoJob(DateTime.Now);
+        task.DoJob();
         Assert.Equal(2, task.RestorePoints.Count());
     }
 

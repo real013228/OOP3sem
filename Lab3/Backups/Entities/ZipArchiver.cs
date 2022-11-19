@@ -16,7 +16,7 @@ public class ZipArchiver : IArchiver
         _log = string.Empty;
     }
 
-    public IStorage DoArchive(IReadOnlyCollection<IRepoObject> objects, IRepository repository, string path)
+    public IStorage DoArchive(IReadOnlyList<IRepoObject> objects, IRepository repository, string path)
     {
         string archName = MyPath.PathCombine($"{path}", $"{Guid.NewGuid()}.zip");
         Stream stream = repository.OpenWrite(archName);

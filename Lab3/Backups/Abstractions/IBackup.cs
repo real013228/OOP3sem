@@ -4,6 +4,6 @@ namespace Backups.Abstractions;
 
 public interface IBackup
 {
-    public IReadOnlyCollection<RestorePoint> RestorePoints { get; }
+    public IReadOnlyList<RestorePoint> RestorePoints { get; }
     public void AddRestorePoint(RestorePoint restorePoint);
 }
