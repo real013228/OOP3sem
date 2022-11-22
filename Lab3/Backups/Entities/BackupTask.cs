@@ -10,7 +10,6 @@ public class BackupTask : IBackupTask
     private readonly List<BackupObject> _objects;
     private readonly IBackup _backup;
     private readonly IDateTimeProvider _time;
-
     public BackupTask(IBackup backup, IRepository repository, IStorageAlgorithm algorithm, string name, IDateTimeProvider time)
     {
         _objects = new List<BackupObject>();
@@ -51,7 +50,7 @@ public class BackupTask : IBackupTask
         string pathName = MyPath.PathCombine(Name.PathName, restorePointName);
         string path = _repository.CreateDirectory(pathName);
         IStorage storage = _algorithm.CreateStorage(objects, _repository, path);
-        var restorePoint = new RestorePoint(_objects, storage, _time.GetTime(), restorePointName);
+        var restorePoint = new RestorePoint(new List<BackupObject>(_objects), storage, _time.GetTime(), restorePointName);
         _backup.AddRestorePoint(restorePoint);
         return restorePoint;
     }
