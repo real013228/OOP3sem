@@ -10,6 +10,7 @@ public class BackupTask : IBackupTask
     private readonly List<BackupObject> _objects;
     private readonly IBackup _backup;
     private readonly IDateTimeProvider _time;
+
     public BackupTask(IBackup backup, IRepository repository, IStorageAlgorithm algorithm, string name, IDateTimeProvider time)
     {
         _objects = new List<BackupObject>();
@@ -30,7 +31,7 @@ public class BackupTask : IBackupTask
             throw new NullReferenceException();
         }
 
-        _objects.Add(obj);
+        _objects.Add(new BackupObject(obj.Descriptor, _repository));
     }
 
     public void RemoveBackupObject(BackupObject obj)
