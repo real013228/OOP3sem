@@ -7,26 +7,23 @@ namespace Backups.Entities;
 
 public class ZipArchiver : IArchiver
 {
-    private readonly List<IRepoObject> _forest;
-    private string _log;
+    private List<IRepoObject> _forest;
 
     public ZipArchiver()
     {
         _forest = new List<IRepoObject>();
-        _log = string.Empty;
     }
 
     public IStorage DoArchive(IReadOnlyList<IRepoObject> objects, IRepository repository, string path)
     {
+        _forest = objects.ToList();
         string archName = MyPath.PathCombine($"{path}", $"{Guid.NewGuid()}.zip");
         Stream stream = repository.OpenWrite(archName);
         using var archive = new ZipArchive(stream, ZipArchiveMode.Create);
         var visitor = new ZipArchiverVisitor(archive);
-        _log = string.Empty;
         foreach (IRepoObject obj in objects)
         {
             obj.Accept(visitor);
-            _log += $"\nObject \"{obj.Name.PathName}\" has been archived";
         }
 
         return new ZipStorage(
@@ -37,6 +34,6 @@ public class ZipArchiver : IArchiver
 
     public override string ToString()
     {
-        return _log;
+        return _forest.ToString() ?? throw new InvalidOperationException();
     }
 }
