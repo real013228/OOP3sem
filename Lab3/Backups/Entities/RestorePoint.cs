@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Reflection.Metadata.Ecma335;
 using System.Security.Cryptography;
 using Backups.Abstractions;
 using Backups.Algorithms;
@@ -22,4 +23,8 @@ public class RestorePoint
     public DateTime CreationDate { get; }
     public IStorage Storage { get; }
     public string Name { get; }
+    public override string ToString()
+    {
+        return $"{Name} - created at {CreationDate}, backup objects count - {_backupObjects.Count}\n";
+    }
 }

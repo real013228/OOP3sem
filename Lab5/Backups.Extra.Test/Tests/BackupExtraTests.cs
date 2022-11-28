@@ -165,4 +165,27 @@ public class BackupExtraTests
         // taskExtra.DoJob();
         // var originalRestorer = new OriginalRestorer();
     }
+
+    [Fact]
+    public void LoggingTest()
+    {
+        const string path = @"C:\Users\real0\OneDrive\real013228\Lab5";
+        IBackup backup = new Backup();
+        IRepository repository = new Repository(path);
+        IRepositoryExtra repositoryExtra = new RepositoryExtra(new MyPath(path), repository);
+        IArchiver archiver = new ZipArchiver();
+        var algorithm = new SingleStorage<IArchiver>(archiver);
+        IDateTimeProvider provider = new DateTimeProvider();
+        ILogger logger = new FileLogger(path, repositoryExtra, false);
+        IBackupTask backupTask = new BackupTask(backup, repository, algorithm, "Task3", provider);
+        IBackupExtra backupExtra = new BackupExtra(backup, logger);
+        IBackupTaskExtra backupTaskExtra = new BackupTaskExtra(backupExtra, repositoryExtra, algorithm, provider, logger, backupTask);
+        var obj1 = new BackupObject("TestDir", repository);
+        var obj2 = new BackupObject("TestFile.txt", repository);
+        backupTaskExtra.AddBackupObject(obj1);
+        backupTaskExtra.AddBackupObject(obj2);
+        backupTaskExtra.DoJob();
+        backupTaskExtra.RemoveBackupObject(obj1);
+        backupTaskExtra.DoJob();
+    }
 }

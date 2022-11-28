@@ -34,7 +34,7 @@ public class RepositoryExtra : IRepositoryExtra
 
     public StreamWriter OpenFile(string path)
     {
-        return new StreamWriter(path);
+        return new StreamWriter(path, true);
     }
 
     public Stream OpenFileStream(string path)

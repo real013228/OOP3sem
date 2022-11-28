@@ -15,6 +15,6 @@ public class ConsoleLogger : ILogger
     {
         if (_withTimeCode)
             log = $"{DateTime.Now}\n{log}";
-        Console.WriteLine(log);
+        Console.Write(log);
     }
 }

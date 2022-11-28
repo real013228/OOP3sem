@@ -7,34 +7,36 @@ namespace Backups.Extra.Entities.ExtraEntities;
 
 public class BackupExtra : IBackupExtra
 {
-    private readonly ICleaner _cleaner;
-    private readonly List<RestorePoint> _restorePoints;
+    private readonly IBackup _backup;
 
-    public BackupExtra(IReadOnlyList<RestorePoint> restorePoints, ICleaner cleaner)
+    public BackupExtra(IBackup backup, ILogger logger)
     {
-        _restorePoints = restorePoints.ToList();
-        _cleaner = cleaner;
+        _backup = backup;
+        Logger = logger;
     }
 
-    public IReadOnlyList<RestorePoint> RestorePoints => _restorePoints;
+    public IReadOnlyList<RestorePoint> RestorePoints => _backup.RestorePoints;
+    public ICleaner? Cleaner { get; set; }
+    public ILogger Logger { get; set; }
 
     public void AddRestorePoint(RestorePoint restorePoint)
     {
-        if (_restorePoints.Contains(restorePoint))
-            throw new NullReferenceException();
-        _restorePoints.Add(restorePoint);
-        Clean();
+        string log = $"Adding restore point {restorePoint} ...\n";
+        Logger.Log(log);
+        _backup.AddRestorePoint(restorePoint);
     }
 
     public void RemoveRestorePoint(RestorePoint restorePoint)
     {
-        if (!_restorePoints.Contains(restorePoint))
-            throw new NullReferenceException();
-        _restorePoints.Remove(restorePoint);
+        string log = $"Removing restore point {restorePoint} ...\n";
+        Logger.Log(log);
+        _backup.RemoveRestorePoint(restorePoint);
     }
 
     public void Clean()
     {
-        _cleaner.Clean(RestorePoints, this);
+        string log = $"Cleaning restore points ...\n";
+        Logger.Log(log);
+        Cleaner?.Clean(RestorePoints, this);
     }
 }

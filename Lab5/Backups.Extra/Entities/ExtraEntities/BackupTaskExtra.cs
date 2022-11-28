@@ -44,13 +44,7 @@ public class BackupTaskExtra : IBackupTaskExtra
     {
         RestorePoint restorePoint = _backupTask.DoJob();
         _backup.AddRestorePoint(restorePoint);
-        _logger.Log($"{_algorithm}");
+        _logger.Log($"Creating {restorePoint} ...\n");
         return restorePoint;
-    }
-
-    public void Clean(IEnumerable<RestorePoint> restorePoints, ICleaner cleaner)
-    {
-        string log = $"Cleaning restore points: \n";
-        _logger.Log(log);
     }
 }
