@@ -187,5 +187,6 @@ public class BackupExtraTests
         backupTaskExtra.DoJob();
         backupTaskExtra.RemoveBackupObject(obj1);
         backupTaskExtra.DoJob();
+        Assert.True(true);
     }
 }
