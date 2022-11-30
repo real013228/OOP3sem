@@ -4,20 +4,23 @@ namespace Banks.Entities;
 
 public class DebitAccount : IBankAccount
 {
-    public DebitAccount(decimal percent, decimal account, Client clientAccount)
+    public DebitAccount(decimal percent, decimal account, Client clientAccount, IClock clock)
     {
         Percent = percent;
         Commission = 0;
         Account = account;
         ClientAccount = clientAccount;
+        Clock = clock;
         Id = Guid.NewGuid();
     }
 
     public Client ClientAccount { get; }
+    public decimal TransactionLimit { get; set; }
     public decimal Percent { get; }
     public decimal Commission { get; }
     public decimal Account { get; private set; }
     public Guid Id { get; }
+    public IClock Clock { get; }
 
     public void TakeMoney(decimal value)
     {
@@ -29,13 +32,5 @@ public class DebitAccount : IBankAccount
     public void TopUpMoney(decimal value)
     {
         Account += value;
-    }
-
-    public void TransferMoney(IBankAccount otherClientAccount, decimal value)
-    {
-        if (Account < value)
-            throw new NullReferenceException();
-        Account -= value;
-        otherClientAccount.TopUpMoney(value);
     }
 }
