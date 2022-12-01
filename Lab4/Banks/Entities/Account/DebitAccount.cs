@@ -23,13 +23,17 @@ public class DebitAccount : IBankAccount
     public Guid Id { get; }
     public IClock Clock { get; }
 
-    public void TakeMoney(decimal value)
+    public decimal TakeMoney(decimal value)
     {
-        BalanceValue.DecreaseMoney(value);
+        if (ClientAccount.IsSus && TransactionLimit < value && BalanceValue.Value < value)
+            throw new NullReferenceException();
+        return BalanceValue.DecreaseMoney(value);
     }
 
-    public void TopUpMoney(decimal value)
+    public decimal TopUpMoney(decimal value)
     {
-        BalanceValue.IncreaseMoney(value);
+        if (ClientAccount.IsSus && TransactionLimit < value)
+            throw new NullReferenceException();
+        return BalanceValue.IncreaseMoney(value);
     }
 }

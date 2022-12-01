@@ -10,6 +10,6 @@ public interface IBankAccount
     Balance BalanceValue { get; }
     Guid Id { get; }
     IClock Clock { get; }
-    void TakeMoney(decimal value);
-    void TopUpMoney(decimal value);
+    decimal TakeMoney(decimal value);
+    decimal TopUpMoney(decimal value);
 }

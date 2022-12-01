@@ -4,7 +4,7 @@ namespace Banks.Entities.Transactions;
 
 public class TransferMoney : ITransaction
 {
-    public TransferMoney(decimal value, IBankAccount fromAccount,  IBankAccount toAccount)
+    public TransferMoney(decimal value, Guid fromAccount,  Guid toAccount)
     {
         Value = value;
         ToAccount = toAccount;
@@ -12,8 +12,8 @@ public class TransferMoney : ITransaction
         Id = Guid.NewGuid();
     }
 
-    public IBankAccount FromAccount { get; }
-    public IBankAccount ToAccount { get; }
+    public Guid FromAccount { get; }
+    public Guid ToAccount { get; }
     public decimal Value { get; }
 
     public Guid Id { get; }

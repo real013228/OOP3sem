@@ -1,21 +1,24 @@
 ﻿using Banks.Abstractions;
+using Banks.Entities.AccountCreators;
 using Banks.Models;
 
 namespace Banks.Entities.Account;
 
 public class CreditAccount : IBankAccount
 {
-    public CreditAccount(decimal commission, decimal account, Client clientAccount, IClock clock)
+    public CreditAccount(decimal commission, decimal account, Client clientAccount, IClock clock, decimal creditLimit)
     {
         Percent = 0;
         Commission = commission;
         BalanceValue = new Balance(account);
         ClientAccount = clientAccount;
         Clock = clock;
+        CreditLimit = creditLimit;
         Id = Guid.NewGuid();
     }
 
     public Client ClientAccount { get; }
+    public decimal CreditLimit { get; set; }
     public decimal TransactionLimit { get; set; }
     public decimal Percent { get; }
     public decimal Commission { get; }
@@ -32,17 +35,25 @@ public class CreditAccount : IBankAccount
     public Guid Id { get; }
     public IClock Clock { get; }
 
-    public void TakeMoney(decimal value)
+    public decimal TakeMoney(decimal value)
     {
         if (ClientAccount.IsSus && TransactionLimit < value)
             throw new NullReferenceException();
-        BalanceValue.DecreaseMoney(value);
+        return BalanceValue.Value < 0 ? BalanceValue.DecreaseMoney(value + Commission) : BalanceValue.DecreaseMoney(value);
     }
 
-    public void TopUpMoney(decimal value)
+    public decimal TopUpMoney(decimal value)
     {
-        if (ClientAccount.IsSus && TransactionLimit < value)
+        if (BalanceValue.Value < 0)
+        {
+            if (ClientAccount.IsSus && TransactionLimit < value &&
+                CreditLimit > BalanceValue.Value - value - Commission)
+                throw new NullReferenceException();
+            return BalanceValue.IncreaseMoney(value + Commission);
+        }
+
+        if (ClientAccount.IsSus && TransactionLimit < value && CreditLimit > BalanceValue.Value - value)
             throw new NullReferenceException();
-        BalanceValue.IncreaseMoney(value);
+        return BalanceValue.IncreaseMoney(value);
     }
 }

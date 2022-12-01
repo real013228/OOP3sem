@@ -2,22 +2,24 @@
 
 public class Balance
 {
-    private decimal _value;
-
     public Balance(decimal value)
     {
-        _value = value;
+        Value = value;
     }
 
-    public void IncreaseMoney(decimal value)
+    public decimal Value { get; private set; }
+
+    public decimal IncreaseMoney(decimal value)
     {
-        _value += value;
+        Value += value;
+        return value;
     }
 
-    public void DecreaseMoney(decimal value)
+    public decimal DecreaseMoney(decimal value)
     {
-        if (_value < value)
+        if (Value < value)
             throw new NullReferenceException();
-        _value -= value;
+        Value -= value;
+        return value;
     }
 }

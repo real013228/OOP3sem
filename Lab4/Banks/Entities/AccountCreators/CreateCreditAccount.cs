@@ -24,6 +24,6 @@ public class CreateCreditAccount : ICreateBankAccount
 
     public IBankAccount Build()
     {
-        return new CreditAccount(_bank !.Commission, _account, _client, _clock);
+        return new CreditAccount(_bank !.Commission, _account, _client, _clock, _bank.CreditLimit);
     }
 }

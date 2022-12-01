@@ -13,9 +13,10 @@ public class CentralBank : ICentralBank
         _banks = new List<Bank>();
     }
 
-    public Bank CreateBank(decimal debitPercent, TimeSpan timeInterval, decimal commission, decimal creditLimit, decimal transactionLimit)
+    public Bank CreateBank(Bank.BankBuilder builder)
     {
-        var bank = new Bank(debitPercent, timeInterval, commission, creditLimit, transactionLimit);
+        Bank bank = builder
+            .Build();
         _banks.Add(bank);
         bank.OnAccountCreated += AccountCreated;
         return bank;
@@ -32,7 +33,8 @@ public class CentralBank : ICentralBank
 
     public void MakeTransaction(ITransaction transaction)
     {
-        var visitor = new TransactionVisitor();
+        var visitor = new TransactionVisitor(_accounts);
+        transaction.Accept(visitor);
     }
 
     private void AccountCreated(IBankAccount account)

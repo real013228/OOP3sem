@@ -4,14 +4,14 @@ namespace Banks.Entities.Transactions;
 
 public class DecreaseMoney : ITransaction
 {
-    public DecreaseMoney(decimal value, IBankAccount account)
+    public DecreaseMoney(decimal value, Guid account)
     {
         Value = value;
         Account = account;
         Id = Guid.NewGuid();
     }
 
-    public IBankAccount Account { get; }
+    public Guid Account { get; }
     public decimal Value { get; }
 
     public Guid Id { get; }
