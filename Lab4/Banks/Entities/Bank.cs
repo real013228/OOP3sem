@@ -9,13 +9,12 @@ public delegate void NotifyAccountCreated(IBankAccount account);
 
 public class Bank
 {
-    private readonly decimal _debitPercent;
+    private readonly List<IBankAccount> _accounts;
     private List<Client> _clients;
-    private List<IBankAccount> _accounts;
 
     public Bank(decimal debitPercent, TimeSpan timeInterval, decimal commission, decimal creditLimit, decimal transactionLimit)
     {
-        _debitPercent = debitPercent;
+        DebitPercent = debitPercent;
         _clients = new List<Client>();
         _accounts = new List<IBankAccount>();
         TimeInterval = timeInterval;
@@ -30,6 +29,7 @@ public class Bank
     public decimal CreditLimit { get; set; }
     public decimal Commission { get; set; }
     public decimal TransactionLimit { get; set; }
+    public decimal DebitPercent { get; }
 
     public decimal CalculateDepositPercent(IDepositCalculator calculator, decimal value)
     {
@@ -37,24 +37,11 @@ public class Bank
         return (decimal)percent !;
     }
 
-    public IBankAccount CreateDebitAccount(Client client, decimal account, IClock clock)
+    public Guid CreateBankAccount(ICreateBankAccount creator)
     {
-        var debitAccount = new DebitAccount(_debitPercent, account, client, clock);
-        OnAccountCreated?.Invoke(debitAccount);
-        return debitAccount;
-    }
-
-    public IBankAccount CreateDepositAccount(Client client, decimal account, IDepositCalculator calculator, IClock clock)
-    {
-        var depositAccount = new DepositAccount(CalculateDepositPercent(calculator, account), account, client, clock);
-        OnAccountCreated?.Invoke(depositAccount);
-        return depositAccount;
-    }
-
-    public IBankAccount CreateCreditAccount(Client client, decimal account, IClock clock)
-    {
-        var creditAccount = new CreditAccount(Commission, account, client, clock);
-        OnAccountCreated?.Invoke(creditAccount);
-        return creditAccount;
+        IBankAccount account = creator.Build();
+        _accounts.Add(account);
+        OnAccountCreated?.Invoke(account);
+        return account.Id;
     }
 }

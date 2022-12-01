@@ -5,13 +5,11 @@ namespace Banks.Entities;
 public class CentralBank : ICentralBank
 {
     private readonly List<Bank> _banks;
-    private readonly List<Client> _clients;
     private readonly List<IBankAccount> _accounts;
 
     public CentralBank()
     {
         _accounts = new List<IBankAccount>();
-        _clients = new List<Client>();
         _banks = new List<Bank>();
     }
 
@@ -29,8 +27,12 @@ public class CentralBank : ICentralBank
             .WithFirstName(firstName)
             .WithLastName(lastName)
             .Build();
-        _clients.Add(client);
         return client;
+    }
+
+    public void MakeTransaction(ITransaction transaction)
+    {
+        var visitor = new TransactionVisitor();
     }
 
     private void AccountCreated(IBankAccount account)

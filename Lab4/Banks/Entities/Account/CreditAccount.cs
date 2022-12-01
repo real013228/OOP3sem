@@ -1,6 +1,7 @@
 ﻿using Banks.Abstractions;
+using Banks.Models;
 
-namespace Banks.Entities;
+namespace Banks.Entities.Account;
 
 public class CreditAccount : IBankAccount
 {
@@ -8,7 +9,7 @@ public class CreditAccount : IBankAccount
     {
         Percent = 0;
         Commission = commission;
-        Account = account;
+        BalanceValue = new Balance(account);
         ClientAccount = clientAccount;
         Clock = clock;
         Id = Guid.NewGuid();
@@ -18,26 +19,30 @@ public class CreditAccount : IBankAccount
     public decimal TransactionLimit { get; set; }
     public decimal Percent { get; }
     public decimal Commission { get; }
-    public decimal Account { get; private set; }
+    public Balance BalanceValue { get; }
 
     // Надо перенести isSus Client => Account.
     // Публичные сеттеры для паспорта и адреса
     // Id для клиента и банка?
     // Подумать над отменой транзакции
     // 29.11.2022 21:12 -- устал.
+    // Надо написать билдер для банка
+    // 30.11.2022 21:44 -- чуть меньше устал
     // todo ;
     public Guid Id { get; }
     public IClock Clock { get; }
 
     public void TakeMoney(decimal value)
     {
-        if (Account < value)
+        if (ClientAccount.IsSus && TransactionLimit < value)
             throw new NullReferenceException();
-        Account -= value;
+        BalanceValue.DecreaseMoney(value);
     }
 
     public void TopUpMoney(decimal value)
     {
-        Account += value;
+        if (ClientAccount.IsSus && TransactionLimit < value)
+            throw new NullReferenceException();
+        BalanceValue.IncreaseMoney(value);
     }
 }

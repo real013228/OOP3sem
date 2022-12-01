@@ -1,14 +1,15 @@
 ﻿using Banks.Abstractions;
+using Banks.Models;
 
-namespace Banks.Entities;
+namespace Banks.Entities.Account;
 
-public class DebitAccount : IBankAccount
+public class DepositAccount : IBankAccount
 {
-    public DebitAccount(decimal percent, decimal account, Client clientAccount, IClock clock)
+    public DepositAccount(decimal percent, decimal startAccount, Client clientAccount, IClock clock)
     {
         Percent = percent;
         Commission = 0;
-        Account = account;
+        BalanceValue = new Balance(startAccount);
         ClientAccount = clientAccount;
         Clock = clock;
         Id = Guid.NewGuid();
@@ -18,19 +19,17 @@ public class DebitAccount : IBankAccount
     public decimal TransactionLimit { get; set; }
     public decimal Percent { get; }
     public decimal Commission { get; }
-    public decimal Account { get; private set; }
+    public Balance BalanceValue { get; }
     public Guid Id { get; }
     public IClock Clock { get; }
 
     public void TakeMoney(decimal value)
     {
-        if (Account < value)
-            throw new NullReferenceException();
-        Account -= value;
+        BalanceValue.DecreaseMoney(value);
     }
 
     public void TopUpMoney(decimal value)
     {
-        Account += value;
+        BalanceValue.IncreaseMoney(value);
     }
 }
