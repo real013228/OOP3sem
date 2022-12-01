@@ -38,16 +38,21 @@ public class TransactionVisitor : ITransactionVisitor
     {
         IBankAccount fromAccount = _accounts.First(x => x.Id == transaction.FromAccount);
         IBankAccount toAccount = _accounts.First(x => x.Id == transaction.ToAccount);
-        decimal takeMoney = fromAccount.TakeMoney(transaction.Value);
-        decimal topUpMoney = toAccount.TopUpMoney(transaction.Value);
-        Balance fromAccountBalance = fromAccount.BalanceValue;
-        Balance toAccountBalance = toAccount.BalanceValue;
-
-        var action = new Action(() =>
+        if (fromAccount.CanTakeMoney(transaction.Value) && toAccount.CanTopUpMoney(transaction.Value))
         {
-            fromAccountBalance.IncreaseMoney(takeMoney);
-            toAccountBalance.DecreaseMoney(topUpMoney);
-        });
-        Transaction = new TransactionWrapper(transaction, action);
+            decimal takeMoney = fromAccount.TakeMoney(transaction.Value);
+            decimal topUpMoney = toAccount.TopUpMoney(transaction.Value);
+            Balance fromAccountBalance = fromAccount.BalanceValue;
+            Balance toAccountBalance = toAccount.BalanceValue;
+
+            var action = new Action(() =>
+            {
+                fromAccountBalance.IncreaseMoney(takeMoney);
+                toAccountBalance.DecreaseMoney(topUpMoney);
+            });
+            Transaction = new TransactionWrapper(transaction, action);
+        }
+
+        throw new NullReferenceException();
     }
 }

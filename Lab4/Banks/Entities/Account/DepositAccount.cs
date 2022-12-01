@@ -18,7 +18,6 @@ public class DepositAccount : IBankAccount
         Clock = clock;
         Id = Guid.NewGuid();
         _cashBack = 0;
-        clock.OnExpired += Verify;
     }
 
     public Client ClientAccount { get; }
@@ -31,16 +30,26 @@ public class DepositAccount : IBankAccount
 
     public decimal TakeMoney(decimal value)
     {
-        if (ClientAccount.IsSus && TransactionLimit < value && _isExpired)
+        if (!CanTakeMoney(value))
             throw new NullReferenceException();
         return BalanceValue.DecreaseMoney(value);
     }
 
     public decimal TopUpMoney(decimal value)
     {
-        if (ClientAccount.IsSus && TransactionLimit < value)
+        if (!CanTopUpMoney(value))
             throw new NullReferenceException();
         return BalanceValue.IncreaseMoney(value);
+    }
+
+    public bool CanTakeMoney(decimal value)
+    {
+        return (!ClientAccount.IsSus || TransactionLimit >= value) && !_isExpired && !(BalanceValue.Value < value);
+    }
+
+    public bool CanTopUpMoney(decimal value)
+    {
+        return !ClientAccount.IsSus || TransactionLimit >= value;
     }
 
     private void Verify()

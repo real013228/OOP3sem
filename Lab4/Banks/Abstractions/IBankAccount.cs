@@ -12,4 +12,6 @@ public interface IBankAccount
     IClock Clock { get; }
     decimal TakeMoney(decimal value);
     decimal TopUpMoney(decimal value);
+    bool CanTakeMoney(decimal value);
+    bool CanTopUpMoney(decimal value);
 }

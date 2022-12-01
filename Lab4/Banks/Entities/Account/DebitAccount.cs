@@ -25,15 +25,25 @@ public class DebitAccount : IBankAccount
 
     public decimal TakeMoney(decimal value)
     {
-        if (ClientAccount.IsSus && TransactionLimit < value && BalanceValue.Value < value)
+        if (!CanTakeMoney(value))
             throw new NullReferenceException();
         return BalanceValue.DecreaseMoney(value);
     }
 
     public decimal TopUpMoney(decimal value)
     {
-        if (ClientAccount.IsSus && TransactionLimit < value)
+        if (!CanTopUpMoney(value))
             throw new NullReferenceException();
         return BalanceValue.IncreaseMoney(value);
+    }
+
+    public bool CanTakeMoney(decimal value)
+    {
+        return !ClientAccount.IsSus || TransactionLimit >= value || BalanceValue.Value >= value;
+    }
+
+    public bool CanTopUpMoney(decimal value)
+    {
+        return !ClientAccount.IsSus || TransactionLimit >= value;
     }
 }

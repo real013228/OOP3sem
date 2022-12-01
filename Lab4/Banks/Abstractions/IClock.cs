@@ -1,8 +1,7 @@
 ﻿namespace Banks.Abstractions;
 
-public delegate void DepositAccountExpired();
+public delegate void DayChanged();
 public interface IClock
 {
-    event DepositAccountExpired? OnExpired;
     DateTime GetCurrentTime { get; }
 }

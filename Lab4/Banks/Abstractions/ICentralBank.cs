@@ -7,4 +7,5 @@ public interface ICentralBank
     Bank CreateBank(Bank.BankBuilder builder);
     Client RegisterClient(string firstName, string lastName);
     void MakeTransaction(ITransaction transaction);
+    void CancelTransaction(ITransaction transaction);
 }

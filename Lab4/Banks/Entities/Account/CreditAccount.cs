@@ -23,37 +23,34 @@ public class CreditAccount : IBankAccount
     public decimal Percent { get; }
     public decimal Commission { get; }
     public Balance BalanceValue { get; }
-
-    // Надо перенести isSus Client => Account.
-    // Публичные сеттеры для паспорта и адреса
-    // Id для клиента и банка?
-    // Подумать над отменой транзакции
-    // 29.11.2022 21:12 -- устал.
-    // Надо написать билдер для банка
-    // 30.11.2022 21:44 -- чуть меньше устал
-    // todo ;
     public Guid Id { get; }
     public IClock Clock { get; }
 
     public decimal TakeMoney(decimal value)
     {
-        if (ClientAccount.IsSus && TransactionLimit < value)
+        if (!CanTakeMoney(value))
             throw new NullReferenceException();
-        return BalanceValue.Value < 0 ? BalanceValue.DecreaseMoney(value + Commission) : BalanceValue.DecreaseMoney(value);
+        return BalanceValue.Value < 0
+            ? BalanceValue.DecreaseMoney(value + Commission)
+            : BalanceValue.DecreaseMoney(value);
     }
 
     public decimal TopUpMoney(decimal value)
     {
-        if (BalanceValue.Value < 0)
-        {
-            if (ClientAccount.IsSus && TransactionLimit < value &&
-                CreditLimit > BalanceValue.Value - value - Commission)
-                throw new NullReferenceException();
-            return BalanceValue.IncreaseMoney(value + Commission);
-        }
-
-        if (ClientAccount.IsSus && TransactionLimit < value && CreditLimit > BalanceValue.Value - value)
+        if (!CanTopUpMoney(value))
             throw new NullReferenceException();
-        return BalanceValue.IncreaseMoney(value);
+        return BalanceValue.Value < 0
+            ? BalanceValue.IncreaseMoney(value - Commission)
+            : BalanceValue.IncreaseMoney(value);
+    }
+
+    public bool CanTakeMoney(decimal value)
+    {
+        return (!ClientAccount.IsSus || TransactionLimit >= value) && BalanceValue.Value - value - Commission >= CreditLimit;
+    }
+
+    public bool CanTopUpMoney(decimal value)
+    {
+        return !ClientAccount.IsSus || value <= TransactionLimit;
     }
 }

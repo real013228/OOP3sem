@@ -1,8 +1,9 @@
-﻿using Banks.Abstractions;
+﻿using System.Data.Common;
+using Banks.Abstractions;
 
 namespace Banks.Entities;
 
-public class TransactionWrapper
+public class TransactionWrapper : IEquatable<TransactionWrapper>
 {
     private readonly Action _cancelTransaction;
     public TransactionWrapper(ITransaction transaction, Action cancelTransaction)
@@ -16,5 +17,15 @@ public class TransactionWrapper
     public void CancelTransaction()
     {
         _cancelTransaction();
+    }
+
+    public bool Equals(TransactionWrapper? other)
+    {
+        return other != null && Transaction.Id == other.Transaction.Id;
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(_cancelTransaction, Transaction);
     }
 }
