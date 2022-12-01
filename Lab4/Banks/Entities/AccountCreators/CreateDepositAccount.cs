@@ -28,6 +28,6 @@ public class CreateDepositAccount : ICreateBankAccount
 
     public IBankAccount Build()
     {
-        return new DepositAccount(_bank !.CalculateDepositPercent(_calculator, _account), _account, _client, _clock);
+        return new DepositAccount(_bank !.CalculateDepositPercent(_calculator, _account), _account, _client, _clock, _bank.Interval);
     }
 }

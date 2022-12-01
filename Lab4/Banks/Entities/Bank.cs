@@ -13,7 +13,7 @@ public class Bank
     private readonly List<IBankAccount> _accounts;
     private List<Client> _clients;
 
-    private Bank(decimal debitPercent, decimal commission, decimal creditLimit, decimal transactionLimit)
+    private Bank(decimal debitPercent, decimal commission, decimal creditLimit, decimal transactionLimit, TimeSpan interval)
     {
         DebitPercent = debitPercent;
         _clients = new List<Client>();
@@ -21,6 +21,7 @@ public class Bank
         Commission = commission;
         CreditLimit = creditLimit;
         TransactionLimit = transactionLimit;
+        Interval = interval;
     }
 
     public event NotifyAccountCreated? OnAccountCreated;
@@ -30,6 +31,7 @@ public class Bank
     public decimal Commission { get; set; }
     public decimal TransactionLimit { get; set; }
     public decimal DebitPercent { get; }
+    public TimeSpan Interval { get; }
 
     public decimal CalculateDepositPercent(IDepositCalculator calculator, decimal value)
     {
@@ -53,6 +55,7 @@ public class Bank
         private decimal _commission;
         private decimal _creditLimit;
         private decimal _transactionLimit;
+        private TimeSpan _interval;
 
         public BankBuilder WithDebitPercent(decimal debitPercent)
         {
@@ -78,9 +81,15 @@ public class Bank
             return this;
         }
 
+        public BankBuilder WithInterval(TimeSpan interval)
+        {
+            _interval = interval;
+            return this;
+        }
+
         public Bank Build()
         {
-            return new Bank(_debitPercent, _commission, _creditLimit, _transactionLimit);
+            return new Bank(_debitPercent, _commission, _creditLimit, _transactionLimit, _interval);
         }
     }
 }

@@ -8,7 +8,7 @@ public class DepositAccount : IBankAccount
     private bool _isExpired;
     private decimal _cashBack;
 
-    public DepositAccount(decimal percent, decimal startAccount, Client clientAccount, IClock clock)
+    public DepositAccount(decimal percent, decimal startAccount, Client clientAccount, IClock clock, TimeSpan interval)
     {
         _isExpired = false;
         Percent = percent;
@@ -18,6 +18,7 @@ public class DepositAccount : IBankAccount
         Clock = clock;
         Id = Guid.NewGuid();
         _cashBack = 0;
+        Interval = interval;
     }
 
     public Client ClientAccount { get; }
@@ -27,6 +28,7 @@ public class DepositAccount : IBankAccount
     public Balance BalanceValue { get; }
     public Guid Id { get; }
     public IClock Clock { get; }
+    public TimeSpan Interval { get; }
 
     public decimal TakeMoney(decimal value)
     {

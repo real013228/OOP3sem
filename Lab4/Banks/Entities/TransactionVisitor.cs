@@ -52,7 +52,9 @@ public class TransactionVisitor : ITransactionVisitor
             });
             Transaction = new TransactionWrapper(transaction, action);
         }
-
-        throw new NullReferenceException();
+        else
+        {
+            throw new NullReferenceException();
+        }
     }
 }
