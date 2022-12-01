@@ -101,18 +101,6 @@ public class BackupExtraTests
         IDateTimeProvider provider = new DateTimeProvider();
         ILogger logger = new ConsoleLogger(true);
         IBackupTask backupTask = new BackupTask(backup, repository, algorithm, "Task1", provider);
-
-        // IBackupTaskExtra taskExtra =
-        // new BackupTaskExtra(backup, repositoryExtra, algorithm, provider, logger, backupTask);
-        // var backupObject1 = new BackupObject(@"TestDir", repository);
-        // var backupObject2 = new BackupObject(@"TestFile.txt", repository);
-        // taskExtra.AddBackupObject(backupObject1);
-        // taskExtra.AddBackupObject(backupObject2);
-        // taskExtra.DoJob();
-        // taskExtra.RemoveBackupObject(backupObject1);
-        // taskExtra.DoJob();
-        // taskExtra.DoJob();
-        // Assert.Equal(2, taskExtra.RestorePoints.Count());
     }
 
     [Fact]
@@ -126,20 +114,6 @@ public class BackupExtraTests
         var algorithm = new SingleStorage<IArchiver>(archiver);
         IDateTimeProvider provider = new DateTimeProvider();
         ILogger logger = new ConsoleLogger(true);
-
-        // IBackupExtra backupExtra =
-        // new BackupExtra(backup.RestorePoints, new DifferentRestorer(repositoryExtra), backup, new);
-        // IBackupTask backupTask = new BackupTask(backup, repository, algorithm, "Task3", provider);
-
-        // var taskExtra =
-        //     new BackupTaskExtra(backup, repositoryExtra, algorithm, provider, logger, backupTask);
-        // var backupObject1 = new BackupObject(@"TestDir", repository);
-        // var backupObject2 = new BackupObject(@"TestFile.txt", repository);
-        // taskExtra.AddBackupObject(backupObject1);
-        // taskExtra.DoJob();
-        // taskExtra.RemoveBackupObject(backupObject1);
-        // taskExtra.AddBackupObject(backupObject2);
-        // taskExtra.DoJob();
     }
 
     [Fact]
@@ -154,16 +128,6 @@ public class BackupExtraTests
         IDateTimeProvider provider = new DateTimeProvider();
         ILogger logger = new ConsoleLogger(true);
         IBackupTask backupTask = new BackupTask(backup, repository, algorithm, "Task3", provider);
-
-        // var taskExtra = new BackupTaskExtra(backupExtra, repositoryExtra, algorithm, provider, logger, backupTask);
-        // var backupObject1 = new BackupObject(@"TestDir", repository);
-        // var backupObject2 = new BackupObject(@"TestFile.txt", repository);
-        // taskExtra.AddBackupObject(backupObject1);
-        // taskExtra.DoJob();
-        // taskExtra.RemoveBackupObject(backupObject1);
-        // taskExtra.AddBackupObject(backupObject2);
-        // taskExtra.DoJob();
-        // var originalRestorer = new OriginalRestorer();
     }
 
     [Fact]
