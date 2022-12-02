@@ -28,17 +28,21 @@ public class SetCommissionHandler : ISetBankParameter
     {
         if (key == '1')
         {
-            Console.Clear();
-            Console.WriteLine("Please set commission for your new bank");
-            string? commission = Console.ReadLine();
-            if (commission != null && int.TryParse(commission, out int outNum))
+            while (true)
             {
-                Commission = outNum;
-                Console.WriteLine($"Commission has been set successfully! New value is {Commission}");
-            }
-            else
-            {
-                Console.WriteLine("Try Again");
+                Console.Clear();
+                Console.WriteLine("Please set commission for your new bank");
+                string? commission = Console.ReadLine();
+                if (commission != null && int.TryParse(commission, out int outNum))
+                {
+                    Commission = outNum;
+                    Console.WriteLine($"Commission has been set successfully! New value is {Commission}");
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Try Again");
+                }
             }
         }
         else
