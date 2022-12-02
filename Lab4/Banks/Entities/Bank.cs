@@ -8,30 +8,87 @@ namespace Banks.Entities;
 
 public delegate void NotifyAccountCreated(IBankAccount account);
 
+public delegate void NotifyAccountPolicyHasBeenChanged(decimal value);
+public delegate void NotifyAccountTimePolicyHasBeenChanged(TimeSpan value);
+
 public class Bank
 {
     private readonly List<IBankAccount> _accounts;
     private List<Client> _clients;
+    private decimal _creditLimit;
+    private decimal _commission;
+    private decimal _transactionLimit;
+    private decimal _debitPercent;
+    private TimeSpan _interval;
 
     private Bank(decimal debitPercent, decimal commission, decimal creditLimit, decimal transactionLimit, TimeSpan interval)
     {
-        DebitPercent = debitPercent;
+        _debitPercent = debitPercent;
         _clients = new List<Client>();
         _accounts = new List<IBankAccount>();
-        Commission = commission;
-        CreditLimit = creditLimit;
-        TransactionLimit = transactionLimit;
-        Interval = interval;
+        _commission = commission;
+        _creditLimit = creditLimit;
+        _transactionLimit = transactionLimit;
+        _interval = interval;
     }
 
     public event NotifyAccountCreated? OnAccountCreated;
-
+    public event NotifyAccountPolicyHasBeenChanged? CommissionHasBeenChanged;
+    public event NotifyAccountPolicyHasBeenChanged? CreditLimitHasBeenChanged;
+    public event NotifyAccountPolicyHasBeenChanged? TransactionLimitHasBeenChanged;
+    public event NotifyAccountTimePolicyHasBeenChanged? TimeIntervalHasBeenChanged;
+    public event NotifyAccountPolicyHasBeenChanged? DebitPercentHasBeenChanged;
     public static BankBuilder Builder => new BankBuilder();
-    public decimal CreditLimit { get; set; }
-    public decimal Commission { get; set; }
-    public decimal TransactionLimit { get; set; }
-    public decimal DebitPercent { get; }
-    public TimeSpan Interval { get; }
+
+    public decimal CreditLimit
+    {
+        get => _creditLimit;
+        set
+        {
+            _creditLimit = value;
+            CreditLimitHasBeenChanged?.Invoke(value);
+        }
+    }
+
+    public decimal Commission
+    {
+        get => _commission;
+        set
+        {
+            _commission = value;
+            CommissionHasBeenChanged?.Invoke(value);
+        }
+    }
+
+    public decimal TransactionLimit
+    {
+        get => _transactionLimit;
+        set
+        {
+            _transactionLimit = value;
+            TransactionLimitHasBeenChanged?.Invoke(value);
+        }
+    }
+
+    public decimal DebitPercent
+    {
+        get => _debitPercent;
+        set
+        {
+            _debitPercent = value;
+            DebitPercentHasBeenChanged?.Invoke(value);
+        }
+    }
+
+    public TimeSpan Interval
+    {
+        get => _interval;
+        set
+        {
+            _interval = value;
+            TimeIntervalHasBeenChanged?.Invoke(value);
+        }
+    }
 
     public decimal CalculateDepositPercent(IDepositCalculator calculator, decimal value)
     {

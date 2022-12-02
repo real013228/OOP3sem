@@ -5,22 +5,27 @@ namespace Banks.Entities.Account;
 
 public class DebitAccount : IBankAccount
 {
-    private Balance _balanceValue;
+    private readonly Balance _balanceValue;
+    private readonly Bank _bank;
+    private decimal _cashBack;
 
-    public DebitAccount(decimal percent, decimal account, Client clientAccount, IClock clock)
+    public DebitAccount(decimal percent, decimal account, Client clientAccount, IClock clock, INotifyStrategy notifier, decimal transactionLimit, Bank bank)
     {
         Percent = percent;
-        Commission = 0;
         _balanceValue = new Balance(account);
         ClientAccount = clientAccount;
         Clock = clock;
+        Notifier = notifier;
+        TransactionLimit = transactionLimit;
+        _bank = bank;
         Id = Guid.NewGuid();
+        _bank.TransactionLimitHasBeenChanged += SetTransactionLimit;
     }
 
+    public INotifyStrategy Notifier { get; set; }
     public Client ClientAccount { get; }
-    public decimal TransactionLimit { get; set; }
+    public decimal TransactionLimit { get; private set; }
     public decimal Percent { get; }
-    public decimal Commission { get; }
     public decimal BalanceValue => -_balanceValue.Value;
     public Guid Id { get; }
     public IClock Clock { get; }
@@ -59,5 +64,21 @@ public class DebitAccount : IBankAccount
     {
         if (CanTakeMoney(value))
             _balanceValue.DecreaseMoney(value);
+    }
+
+    private void SetMoneyEveryDay()
+    {
+        _cashBack += _balanceValue.Value * Percent;
+    }
+
+    private void IncreaseMoneyEveryMonth()
+    {
+        _balanceValue.IncreaseMoney(_cashBack);
+    }
+
+    private void SetTransactionLimit(decimal value)
+    {
+        TransactionLimit = value;
+        Notifier.Notify("Transaction limit has been changed");
     }
 }

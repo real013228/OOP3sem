@@ -6,8 +6,10 @@ namespace Banks.Entities.Account;
 
 public class CreditAccount : IBankAccount
 {
-    private Balance _balanceValue;
-    public CreditAccount(decimal commission, decimal account, Client clientAccount, IClock clock, decimal creditLimit)
+    private readonly Balance _balanceValue;
+    private readonly Bank _bank;
+
+    public CreditAccount(decimal commission, decimal account, Client clientAccount, IClock clock, decimal creditLimit, Bank bank, decimal transactionLimit, INotifyStrategy notifier)
     {
         Percent = 0;
         Commission = commission;
@@ -15,14 +17,21 @@ public class CreditAccount : IBankAccount
         ClientAccount = clientAccount;
         Clock = clock;
         CreditLimit = creditLimit;
+        _bank = bank;
+        TransactionLimit = transactionLimit;
+        Notifier = notifier;
         Id = Guid.NewGuid();
+        _bank.CommissionHasBeenChanged += SetCommission;
+        _bank.TransactionLimitHasBeenChanged += SetTransactionLimit;
+        _bank.CreditLimitHasBeenChanged += SetCreditLimit;
     }
 
+    public INotifyStrategy Notifier { get; set; }
     public Client ClientAccount { get; }
-    public decimal CreditLimit { get; set; }
-    public decimal TransactionLimit { get; set; }
+    public decimal CreditLimit { get; private set; }
+    public decimal TransactionLimit { get; private set; }
     public decimal Percent { get; }
-    public decimal Commission { get; }
+    public decimal Commission { get; private set; }
     public decimal BalanceValue => _balanceValue.Value;
     public Guid Id { get; }
     public IClock Clock { get; }
@@ -47,7 +56,8 @@ public class CreditAccount : IBankAccount
 
     public bool CanTakeMoney(decimal value)
     {
-        return (!ClientAccount.IsSus || TransactionLimit >= value) && _balanceValue.Value - value - Commission >= CreditLimit;
+        return (!ClientAccount.IsSus || TransactionLimit >= value) &&
+               _balanceValue.Value - value - Commission >= CreditLimit;
     }
 
     public bool CanTopUpMoney(decimal value)
@@ -65,5 +75,23 @@ public class CreditAccount : IBankAccount
     {
         if (CanTakeMoney(value))
             _balanceValue.DecreaseMoney(value);
+    }
+
+    private void SetCommission(decimal value)
+    {
+        Commission = value;
+        Notifier.Notify("Commission has been changed");
+    }
+
+    private void SetTransactionLimit(decimal value)
+    {
+        TransactionLimit = value;
+        Notifier.Notify("Transaction limit has been changed");
+    }
+
+    private void SetCreditLimit(decimal value)
+    {
+        CreditLimit = value;
+        Notifier.Notify("Credit limit has been changed");
     }
 }

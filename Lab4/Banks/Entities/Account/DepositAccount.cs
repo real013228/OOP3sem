@@ -7,33 +7,36 @@ namespace Banks.Entities.Account;
 public class DepositAccount : IBankAccount
 {
     private readonly Balance _balanceValue;
+    private readonly Bank _bank;
     private bool _isExpired;
     private decimal _cashBack;
 
-    public DepositAccount(decimal percent, decimal startAccount, Client clientAccount, IClock clock, TimeSpan interval)
+    public DepositAccount(decimal percent, decimal startAccount, Client clientAccount, IClock clock, TimeSpan interval, INotifyStrategy notifier, Bank bank, decimal transactionLimit)
     {
         _isExpired = false;
         Percent = percent;
-        Commission = 0;
         _balanceValue = new Balance(startAccount);
         ClientAccount = clientAccount;
         Clock = clock;
         Id = Guid.NewGuid();
         _cashBack = 0;
         Interval = interval;
+        Notifier = notifier;
+        _bank = bank;
+        TransactionLimit = transactionLimit;
         clock.TimeHasBeenExpired += Verify;
         clock.DayHasBeenPassed += SetMoneyEveryDay;
         clock.MonthHasBeenPassed += IncreaseMoneyEveryMonth;
     }
 
+    public INotifyStrategy Notifier { get; set; }
     public Client ClientAccount { get; }
-    public decimal TransactionLimit { get; set; }
+    public decimal TransactionLimit { get; private set; }
     public decimal Percent { get; }
-    public decimal Commission { get; }
     public decimal BalanceValue => _balanceValue.Value;
     public Guid Id { get; }
     public IClock Clock { get; }
-    public TimeSpan Interval { get; }
+    public TimeSpan Interval { get; private set; }
 
     public decimal TakeMoney(decimal value)
     {
@@ -84,5 +87,17 @@ public class DepositAccount : IBankAccount
     private void IncreaseMoneyEveryMonth()
     {
         _balanceValue.IncreaseMoney(_cashBack);
+    }
+
+    private void SetTransactionLimit(decimal value)
+    {
+        TransactionLimit = value;
+        Notifier.Notify("Transaction limit has been changed");
+    }
+
+    private void SetTimeInterval(TimeSpan value)
+    {
+        Interval = value;
+        Notifier.Notify("Time interval has been changed");
     }
 }

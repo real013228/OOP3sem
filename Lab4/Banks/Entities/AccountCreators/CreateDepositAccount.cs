@@ -10,15 +10,17 @@ public class CreateDepositAccount : ICreateBankAccount
     private readonly decimal _account;
     private readonly IClock _clock;
     private readonly IDepositCalculator _calculator;
+    private readonly INotifyStrategy _notifier;
     private Bank? _bank;
 
-    public CreateDepositAccount(Bank? bank, Client client, IClock clock, decimal account, IDepositCalculator calculator)
+    public CreateDepositAccount(Bank? bank, Client client, IClock clock, decimal account, IDepositCalculator calculator, INotifyStrategy notifier)
     {
         _bank = bank;
         _client = client;
         _clock = clock;
         _account = account;
         _calculator = calculator;
+        _notifier = notifier;
     }
 
     public void SetBank(Bank bank)
@@ -28,6 +30,6 @@ public class CreateDepositAccount : ICreateBankAccount
 
     public IBankAccount Build()
     {
-        return new DepositAccount(_bank !.CalculateDepositPercent(_calculator, _account), _account, _client, _clock, _bank.Interval);
+        return new DepositAccount(_bank !.CalculateDepositPercent(_calculator, _account), _account, _client, _clock, _bank.Interval, _notifier, _bank, _bank.TransactionLimit);
     }
 }

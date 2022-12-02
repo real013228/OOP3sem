@@ -6,8 +6,9 @@ namespace Banks.Abstractions;
 
 public interface IBankAccount
 {
+    INotifyStrategy Notifier { get; set; }
     Client ClientAccount { get; }
-    decimal TransactionLimit { get; set; }
+    decimal TransactionLimit { get; }
     decimal BalanceValue { get; }
     Guid Id { get; }
     IClock Clock { get; }
