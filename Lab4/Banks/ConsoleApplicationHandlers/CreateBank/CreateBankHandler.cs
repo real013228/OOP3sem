@@ -1,4 +1,6 @@
-﻿using Banks.Abstractions;
+﻿using System.Collections.Immutable;
+using Banks.Abstractions;
+using Banks.ConsoleApplicationHandlers.HandlerAbstractions;
 using Banks.Entities;
 
 namespace Banks.ConsoleApplicationHandlers.CreateBank;
@@ -6,44 +8,49 @@ namespace Banks.ConsoleApplicationHandlers.CreateBank;
 public class CreateBankHandler : IConsoleApplicationHandler
 {
     private IConsoleApplicationHandler? _nextHandler;
-    private IConsoleApplicationHandler? _menuHandler;
-    private List<IConsoleApplicationHandler> _builderHandlers;
+    private ISetBankParameter? _handler;
 
-    public CreateBankHandler(ICentralBank centralBank, List<IConsoleApplicationHandler> builderHandlers)
+    public CreateBankHandler(ICentralBank centralBank)
     {
         MainCentralBank = centralBank;
-        _builderHandlers = builderHandlers;
     }
 
     public ICentralBank MainCentralBank { get; }
+
+    public void SetLessResponsibilitiesHandler(IHandlerLessResponsibilities handler)
+    {
+        _handler = handler as ISetBankParameter;
+    }
 
     public void SetNextHandler(IConsoleApplicationHandler nextHandler)
     {
         _nextHandler = nextHandler;
     }
 
-    public void SetBackToMenu(IConsoleApplicationHandler menuHandler)
-    {
-        _menuHandler = menuHandler;
-    }
-
     public void Handle(char key)
     {
-        if (key == '2')
+        if (key == '1')
         {
-            Console.WriteLine("Do you want to create a bank?\ny/n");
-            if (Console.ReadKey().KeyChar == 'y')
+            Console.WriteLine("\nDo you want to create a bank?\ny/n");
+            if (Console.ReadKey().KeyChar != 'y') return;
+            Console.WriteLine("\nPlease enter a commission for new bank");
+            while (true)
             {
-                Console.WriteLine("Please enter a commission for new bank");
                 string? commission = Console.ReadLine();
-                while (true)
+                if (commission != null && decimal.TryParse(commission, out decimal _))
                 {
-                    if (commission != null)
-                        _nextHandler.Handle(commission !);
-                    else
-                        Console.WriteLine("Please try again");
+                    Console.WriteLine($"Commission has been set successfully! New value is {commission}");
+                    _handler?.Handle(commission);
+                    Console.WriteLine("The bank has been created successfully!");
+                    break;
                 }
+
+                Console.WriteLine("Please try again");
             }
+        }
+        else
+        {
+            _nextHandler?.Handle(key);
         }
     }
 }

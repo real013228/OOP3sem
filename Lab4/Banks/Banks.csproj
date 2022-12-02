@@ -19,11 +19,4 @@
       </PackageReference>
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="ConsoleApplicationHandlers\BankAccountHandlers" />
-      <Folder Include="ConsoleApplicationHandlers\CancelTransaction" />
-      <Folder Include="ConsoleApplicationHandlers\CreateUser" />
-      <Folder Include="ConsoleApplicationHandlers\MakeTransaction" />
-    </ItemGroup>
-
 </Project>

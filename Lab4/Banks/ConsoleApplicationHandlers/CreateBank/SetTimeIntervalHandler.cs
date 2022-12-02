@@ -1,49 +1,32 @@
 ﻿using Banks.Abstractions;
+using Banks.ConsoleApplicationHandlers.HandlerAbstractions;
+using Banks.Entities;
 
 namespace Banks.ConsoleApplicationHandlers.CreateBank;
 
 public class SetTimeIntervalHandler : ISetBankParameter
 {
-    private IConsoleApplicationHandler? _nextHandler;
-    private IConsoleApplicationHandler? _menuHandler;
+    private ISetBankParameter? _nextHandler;
 
-    public SetTimeIntervalHandler(ICentralBank mainCentralBank)
+    public SetTimeIntervalHandler(ICentralBank mainCentralBank, Bank.BankBuilder builder)
     {
         MainCentralBank = mainCentralBank;
+        Builder = builder;
     }
 
-    public TimeSpan? Interval { get; private set; }
     public ICentralBank MainCentralBank { get; }
-    public void SetNextHandler(IConsoleApplicationHandler nextHandler)
+
+    public Bank.BankBuilder Builder { get; }
+    public Bank? Bank { get; private set; }
+
+    public void SetNextHandler(ISetBankParameter nextHandler)
     {
         _nextHandler = nextHandler;
     }
 
-    public void SetBackToMenu(IConsoleApplicationHandler menuHandler)
+    public void Handle(string value)
     {
-        _menuHandler = menuHandler;
-    }
-
-    public void Handle(char key)
-    {
-        if (key == '5')
-        {
-            Console.Clear();
-            Console.WriteLine("Please set deposit account time interval for your new bank in days");
-            string? timeInterval = Console.ReadLine();
-            if (timeInterval != null && int.TryParse(timeInterval, out int outNum))
-            {
-                Interval = TimeSpan.FromDays(outNum);
-                Console.WriteLine($"Deposit account time interval has been set successfully! New value is {Interval}");
-            }
-            else
-            {
-                Console.WriteLine("Try Again");
-            }
-        }
-        else
-        {
-            _nextHandler?.Handle(key);
-        }
+        Builder.WithInterval(TimeSpan.Parse(value));
+        Bank = MainCentralBank.CreateBank(Builder);
     }
 }

@@ -1,49 +1,42 @@
 ﻿using Banks.Abstractions;
+using Banks.ConsoleApplicationHandlers.HandlerAbstractions;
+using Banks.Entities;
 
 namespace Banks.ConsoleApplicationHandlers.CreateBank;
 
 public class SetDebitPercentHandler : ISetBankParameter
 {
-    private IConsoleApplicationHandler? _nextHandler;
-    private IConsoleApplicationHandler? _menuHandler;
+    private ISetBankParameter? _nextHandler;
 
-    public SetDebitPercentHandler(ICentralBank mainCentralBank)
+    public SetDebitPercentHandler(ICentralBank mainCentralBank, Bank.BankBuilder builder)
     {
         MainCentralBank = mainCentralBank;
+        Builder = builder;
     }
 
-    public decimal? DebitPercent { get; private set; }
     public ICentralBank MainCentralBank { get; }
-    public void SetNextHandler(IConsoleApplicationHandler nextHandler)
+
+    public Bank.BankBuilder Builder { get; }
+    public void SetNextHandler(ISetBankParameter nextHandler)
     {
         _nextHandler = nextHandler;
     }
 
-    public void SetBackToMenu(IConsoleApplicationHandler menuHandler)
+    public void Handle(string value)
     {
-        _menuHandler = menuHandler;
-    }
+        Builder.WithDebitPercent(decimal.Parse(value));
+        while (true)
+        {
+            Console.WriteLine("Please set transaction limit for your new bank");
+            string? transactionLimit = Console.ReadLine();
+            if (transactionLimit != null && decimal.TryParse(transactionLimit, out decimal outNum))
+            {
+                Console.WriteLine($"Transaction limit has been set successfully! New value is {transactionLimit}");
+                _nextHandler?.Handle(transactionLimit);
+                break;
+            }
 
-    public void Handle(char key)
-    {
-        if (key == '3')
-        {
-            Console.Clear();
-            Console.WriteLine("Please set debit percent for your new bank");
-            string? debitPercent = Console.ReadLine();
-            if (debitPercent != null && int.TryParse(debitPercent, out int outNum))
-            {
-                DebitPercent = outNum;
-                Console.WriteLine($"Debit percent has been set successfully! New value is {DebitPercent}");
-            }
-            else
-            {
-                Console.WriteLine("Try Again");
-            }
-        }
-        else
-        {
-            _nextHandler?.Handle(key);
+            Console.WriteLine("Try Again");
         }
     }
 }

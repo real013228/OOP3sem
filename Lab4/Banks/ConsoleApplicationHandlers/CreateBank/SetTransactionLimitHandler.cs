@@ -1,50 +1,43 @@
 ﻿using Banks.Abstractions;
+using Banks.ConsoleApplicationHandlers.HandlerAbstractions;
+using Banks.Entities;
 
 namespace Banks.ConsoleApplicationHandlers.CreateBank;
 
 public class SetTransactionLimitHandler : ISetBankParameter
 {
-    private IConsoleApplicationHandler? _nextHandler;
-    private IConsoleApplicationHandler? _menuHandler;
+    private ISetBankParameter? _nextHandler;
 
-    public SetTransactionLimitHandler(ICentralBank mainCentralBank)
+    public SetTransactionLimitHandler(ICentralBank mainCentralBank, Bank.BankBuilder builder)
     {
         MainCentralBank = mainCentralBank;
+        Builder = builder;
     }
 
-    public decimal? TransactionLimit { get; private set; }
     public ICentralBank MainCentralBank { get; }
 
-    public void SetNextHandler(IConsoleApplicationHandler nextHandler)
+    public Bank.BankBuilder Builder { get; }
+
+    public void SetNextHandler(ISetBankParameter nextHandler)
     {
         _nextHandler = nextHandler;
     }
 
-    public void SetBackToMenu(IConsoleApplicationHandler menuHandler)
+    public void Handle(string value)
     {
-        _menuHandler = menuHandler;
-    }
+        Builder.WithTransactionLimit(decimal.Parse(value));
+        while (true)
+        {
+            Console.WriteLine("Please set deposit account term for your new bank");
+            string? timeInterval = Console.ReadLine();
+            if (timeInterval != null && TimeSpan.TryParse(timeInterval, out TimeSpan outNum))
+            {
+                Console.WriteLine($"Deposit account term has been set successfully! New value is {timeInterval}");
+                _nextHandler?.Handle(timeInterval);
+                break;
+            }
 
-    public void Handle(char key)
-    {
-        if (key == '4')
-        {
-            Console.Clear();
-            Console.WriteLine("Please set transaction limit for your new bank");
-            string? transactionLimit = Console.ReadLine();
-            if (transactionLimit != null && int.TryParse(transactionLimit, out int outNum))
-            {
-                TransactionLimit = outNum;
-                Console.WriteLine($"Transaction limitr has been set successfully! New value is {TransactionLimit}");
-            }
-            else
-            {
-                Console.WriteLine("Try Again");
-            }
-        }
-        else
-        {
-            _nextHandler?.Handle(key);
+            Console.WriteLine("Try Again");
         }
     }
 }

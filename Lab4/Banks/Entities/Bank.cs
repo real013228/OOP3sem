@@ -9,12 +9,13 @@ namespace Banks.Entities;
 public delegate void NotifyAccountCreated(IBankAccount account);
 
 public delegate void NotifyAccountPolicyHasBeenChanged(decimal value);
+
 public delegate void NotifyAccountTimePolicyHasBeenChanged(TimeSpan value);
 
 public class Bank
 {
     private readonly List<IBankAccount> _accounts;
-    private List<Client> _clients;
+    private readonly List<Client> _clients;
     private decimal _creditLimit;
     private decimal _commission;
     private decimal _transactionLimit;
@@ -30,6 +31,7 @@ public class Bank
         _creditLimit = creditLimit;
         _transactionLimit = transactionLimit;
         _interval = interval;
+        Id = Guid.NewGuid();
     }
 
     public event NotifyAccountCreated? OnAccountCreated;
@@ -39,6 +41,7 @@ public class Bank
     public event NotifyAccountTimePolicyHasBeenChanged? TimeIntervalHasBeenChanged;
     public event NotifyAccountPolicyHasBeenChanged? DebitPercentHasBeenChanged;
     public static BankBuilder Builder => new BankBuilder();
+    public Guid Id { get; }
 
     public decimal CreditLimit
     {
@@ -102,6 +105,19 @@ public class Bank
         _accounts.Add(account);
         OnAccountCreated?.Invoke(account);
         return account.Id;
+    }
+
+    public void RegisterClient(Client client)
+    {
+        _clients.Add(client);
+    }
+
+    public Client GetClientFromId(Guid id)
+    {
+        Client? client = _clients.FirstOrDefault(x => x.Id == id);
+        if (client != null)
+            return client !;
+        throw new NullReferenceException();
     }
 
     public class BankBuilder

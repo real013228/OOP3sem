@@ -12,10 +12,12 @@ public class Client
         LastName = lastName;
         IsSus = false;
         Accounts = new AccountCollection(new List<IBankAccount>());
+        Id = Guid.NewGuid();
     }
 
     public static ClientBuilder Builder => new ClientBuilder();
     public AccountCollection Accounts { get; }
+    public Guid Id { get; }
     public string FirstName { get; }
     public string LastName { get; }
     public Passport? Passport { get; private set; }

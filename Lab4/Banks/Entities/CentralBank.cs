@@ -7,12 +7,14 @@ public class CentralBank : ICentralBank
     private readonly List<Bank> _banks;
     private readonly List<IBankAccount> _accounts;
     private readonly List<TransactionWrapper> _transactions;
+    private readonly List<Client> _clients;
 
     public CentralBank()
     {
         _accounts = new List<IBankAccount>();
         _banks = new List<Bank>();
         _transactions = new List<TransactionWrapper>();
+        _clients = new List<Client>();
     }
 
     public Bank CreateBank(Bank.BankBuilder builder)
@@ -24,12 +26,12 @@ public class CentralBank : ICentralBank
         return bank;
     }
 
-    public Client RegisterClient(string firstName, string lastName)
+    public Client RegisterClient(Client.ClientBuilder clientBuilder, Bank bank)
     {
-        Client client = Client.Builder
-            .WithFirstName(firstName)
-            .WithLastName(lastName)
+        Client client = clientBuilder
             .Build();
+        bank.RegisterClient(client);
+        _clients.Add(client);
         return client;
     }
 
@@ -47,6 +49,14 @@ public class CentralBank : ICentralBank
             throw new NullReferenceException();
         transactionWrapper.CancelTransaction();
         _transactions.Remove(transactionWrapper);
+    }
+
+    public Bank GetBankFromId(Guid id)
+    {
+        Bank? bank = _banks.FirstOrDefault(x => x.Id == id);
+        if (bank != null)
+            return bank;
+        throw new NullReferenceException();
     }
 
     private void AccountCreated(IBankAccount account)

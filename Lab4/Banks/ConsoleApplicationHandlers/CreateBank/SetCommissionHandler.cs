@@ -1,53 +1,42 @@
 ﻿using Banks.Abstractions;
+using Banks.ConsoleApplicationHandlers.HandlerAbstractions;
+using Banks.Entities;
 
 namespace Banks.ConsoleApplicationHandlers.CreateBank;
 
 public class SetCommissionHandler : ISetBankParameter
 {
-    private IConsoleApplicationHandler? _nextHandler;
-    private IConsoleApplicationHandler? _menuHandler;
+    private ISetBankParameter? _nextHandler;
 
-    public SetCommissionHandler(ICentralBank mainCentralBank)
+    public SetCommissionHandler(ICentralBank mainCentralBank, Bank.BankBuilder builder)
     {
         MainCentralBank = mainCentralBank;
+        Builder = builder;
     }
 
-    public decimal? Commission { get; private set; }
     public ICentralBank MainCentralBank { get; }
-    public void SetNextHandler(IConsoleApplicationHandler nextHandler)
+    public Bank.BankBuilder Builder { get; }
+
+    public void SetNextHandler(ISetBankParameter nextHandler)
     {
         _nextHandler = nextHandler;
     }
 
-    public void SetBackToMenu(IConsoleApplicationHandler menuHandler)
+    public void Handle(string value)
     {
-        _menuHandler = menuHandler;
-    }
-
-    public void Handle(char key)
-    {
-        if (key == '1')
+        Builder.WithCommission(decimal.Parse(value));
+        while (true)
         {
-            while (true)
+            Console.WriteLine("Please set credit limit for your new bank");
+            string? creditLimit = Console.ReadLine();
+            if (creditLimit != null && decimal.TryParse(creditLimit, out decimal outNum))
             {
-                Console.Clear();
-                Console.WriteLine("Please set commission for your new bank");
-                string? commission = Console.ReadLine();
-                if (commission != null && int.TryParse(commission, out int outNum))
-                {
-                    Commission = outNum;
-                    Console.WriteLine($"Commission has been set successfully! New value is {Commission}");
-                    break;
-                }
-                else
-                {
-                    Console.WriteLine("Try Again");
-                }
+                Console.WriteLine($"Credit limit has been set successfully! New value is {creditLimit}");
+                _nextHandler?.Handle(creditLimit);
+                break;
             }
-        }
-        else
-        {
-            _nextHandler?.Handle(key);
+
+            Console.WriteLine("Try Again");
         }
     }
 }
