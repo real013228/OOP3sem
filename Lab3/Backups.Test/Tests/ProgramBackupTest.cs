@@ -18,7 +18,6 @@ public static class ProgramBackupTest
         var algo = new SingleStorage<IArchiver>(archiver);
         IDateTimeProvider provider = new DateTimeProvider();
         var backupTask = new BackupTask(new Backup(), repository, algo,  "TaskFinalSplit2", provider);
-
         backupTask.AddBackupObject(new BackupObject(@"Test", repository));
         backupTask.AddBackupObject(new BackupObject(@"MegaTest2", repository));
         backupTask.AddBackupObject(new BackupObject(@"asasas.txt", repository));
