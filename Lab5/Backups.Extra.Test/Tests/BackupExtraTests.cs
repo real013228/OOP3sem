@@ -103,7 +103,7 @@ public class BackupExtraTests : IDisposable
     [Fact]
     public void RestoreToDifferentRepository()
     {
-        const string path = @"C:\Users\real0\OneDrive\real013228\Lab5";
+        string path = @"C:\Users\real0\OneDrive\real013228\Lab5";
         IBackup backup = new Backup();
         IRepository repository = new Repository(path);
         IRepositoryExtra repositoryExtra = new RepositoryExtra(new MyPath(path), repository);
