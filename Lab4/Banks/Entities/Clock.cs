@@ -25,22 +25,14 @@ public class Clock : IClock
     public event TimeExpired? TimeHasBeenExpired;
     public event TimeExpired? MonthHasBeenPassed;
     public event TimeExpired? DayHasBeenPassed;
-    public DateTime GetCurrentTime { get; }
+    public DateTime GetCurrentTime { get; } = DateTime.Now;
 
-    public void TimeExpired(object? source, ElapsedEventArgs e)
+    public void StartTimer()
     {
-        Console.WriteLine("Has been invoked");
-        TimeHasBeenExpired?.Invoke();
-    }
-
-    public void DayExpired(object? source, ElapsedEventArgs e)
-    {
-        DayHasBeenPassed?.Invoke();
-    }
-
-    public void MonthExpired(object? source, ElapsedEventArgs e)
-    {
-        MonthHasBeenPassed?.Invoke();
+        SetDayChangedTime();
+        SetMonthChangedTime();
+        Console.WriteLine("Ore wa Emilia ga suki da");
+        Console.ReadLine();
     }
 
     public void SetArbitraryTime(TimeSpan timeSpan)
@@ -51,7 +43,7 @@ public class Clock : IClock
         _timerForArbitraryTime.Enabled = true;
     }
 
-    public void SetDayChangedTime()
+    private void SetDayChangedTime()
     {
         _timerForDayChanged = new Timer();
         _timerForDayChanged.Interval = TimeSpan.FromDays(1).TotalMilliseconds / _accelerationFactor;
@@ -59,7 +51,7 @@ public class Clock : IClock
         _timerForDayChanged.Enabled = true;
     }
 
-    public void SetMonthChangedTime()
+    private void SetMonthChangedTime()
     {
         _timerForMonthPassed = new Timer();
         _timerForMonthPassed.Interval = TimeSpan.FromDays(30).TotalMilliseconds / _accelerationFactor;
@@ -67,9 +59,18 @@ public class Clock : IClock
         _timerForMonthPassed.Enabled = true;
     }
 
-    public void StartTimer()
+    private void TimeExpired(object? source, ElapsedEventArgs e)
     {
-        Console.WriteLine("Ore wa Emilia ga suki da");
-        Console.ReadLine();
+        TimeHasBeenExpired?.Invoke();
+    }
+
+    private void DayExpired(object? source, ElapsedEventArgs e)
+    {
+        DayHasBeenPassed?.Invoke();
+    }
+
+    private void MonthExpired(object? source, ElapsedEventArgs e)
+    {
+        MonthHasBeenPassed?.Invoke();
     }
 }

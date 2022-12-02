@@ -12,11 +12,6 @@ public interface IClock
     event TimeExpired? MonthHasBeenPassed;
     event TimeExpired? DayHasBeenPassed;
     DateTime GetCurrentTime { get; }
-
-    public void TimeExpired(object? source, System.Timers.ElapsedEventArgs e);
-
-    void SetArbitraryTime(TimeSpan timeSpan);
-    void SetDayChangedTime();
-    void SetMonthChangedTime();
+    public void SetArbitraryTime(TimeSpan timeSpan);
     void StartTimer();
 }
