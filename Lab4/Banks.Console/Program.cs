@@ -8,6 +8,16 @@ public static class Program
 {
     public static void Main()
     {
+        ICentralBank centralBank = new CentralBank();
+        System.Console.WriteLine("\nHey there! I am using WhatsApp. Do you want to create a central bank?\ny/n");
+        while (System.Console.ReadKey().KeyChar != 'y')
+        {
+            System.Console.WriteLine("\nPlease enter \"y\"");
+        }
+    }
+
+    public static void Requiem()
+    {
         IClock clock = new Clock(10);
         Client client = Client.Builder
             .WithFirstName("Natsuki")
