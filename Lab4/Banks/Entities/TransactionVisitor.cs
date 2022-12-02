@@ -14,12 +14,12 @@ public class TransactionVisitor : ITransactionVisitor
     }
 
     public TransactionWrapper? Transaction { get; private set; }
+
     public void Visit(DecreaseMoney transaction)
     {
         IBankAccount account = _accounts.First(x => x.Id == transaction.Account);
         decimal tookMoney = account.TakeMoney(transaction.Value);
-        Balance accountBalance = account.BalanceValue;
-        void Cancel() => accountBalance.IncreaseMoney(tookMoney);
+        void Cancel() => account.AccrualMoney(tookMoney);
         var transactionWrapper = new TransactionWrapper(transaction, Cancel);
         Transaction = transactionWrapper;
     }
@@ -28,8 +28,7 @@ public class TransactionVisitor : ITransactionVisitor
     {
         IBankAccount account = _accounts.First(x => x.Id == transaction.Account);
         decimal topUpMoney = account.TopUpMoney(transaction.Value);
-        Balance accountBalance = account.BalanceValue;
-        void Cancel() => accountBalance.DecreaseMoney(topUpMoney);
+        void Cancel() => account.DecreaseMoney(topUpMoney);
         var transactionWrapper = new TransactionWrapper(transaction, Cancel);
         Transaction = transactionWrapper;
     }
@@ -42,13 +41,11 @@ public class TransactionVisitor : ITransactionVisitor
         {
             decimal takeMoney = fromAccount.TakeMoney(transaction.Value);
             decimal topUpMoney = toAccount.TopUpMoney(transaction.Value);
-            Balance fromAccountBalance = fromAccount.BalanceValue;
-            Balance toAccountBalance = toAccount.BalanceValue;
 
             var action = new Action(() =>
             {
-                fromAccountBalance.IncreaseMoney(takeMoney);
-                toAccountBalance.DecreaseMoney(topUpMoney);
+                fromAccount.AccrualMoney(takeMoney);
+                toAccount.DecreaseMoney(topUpMoney);
             });
             Transaction = new TransactionWrapper(transaction, action);
         }

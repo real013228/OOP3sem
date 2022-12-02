@@ -1,10 +1,12 @@
-﻿using Banks.Abstractions;
+﻿using System.Timers;
+using Banks.Abstractions;
 using Banks.Models;
 
 namespace Banks.Entities.Account;
 
 public class DepositAccount : IBankAccount
 {
+    private readonly Balance _balanceValue;
     private bool _isExpired;
     private decimal _cashBack;
 
@@ -13,19 +15,22 @@ public class DepositAccount : IBankAccount
         _isExpired = false;
         Percent = percent;
         Commission = 0;
-        BalanceValue = new Balance(startAccount);
+        _balanceValue = new Balance(startAccount);
         ClientAccount = clientAccount;
         Clock = clock;
         Id = Guid.NewGuid();
         _cashBack = 0;
         Interval = interval;
+        clock.TimeHasBeenExpired += Verify;
+        clock.DayHasBeenPassed += SetMoneyEveryDay;
+        clock.MonthHasBeenPassed += IncreaseMoneyEveryMonth;
     }
 
     public Client ClientAccount { get; }
     public decimal TransactionLimit { get; set; }
     public decimal Percent { get; }
     public decimal Commission { get; }
-    public Balance BalanceValue { get; }
+    public decimal BalanceValue => _balanceValue.Value;
     public Guid Id { get; }
     public IClock Clock { get; }
     public TimeSpan Interval { get; }
@@ -34,24 +39,36 @@ public class DepositAccount : IBankAccount
     {
         if (!CanTakeMoney(value))
             throw new NullReferenceException();
-        return BalanceValue.DecreaseMoney(value);
+        return _balanceValue.DecreaseMoney(value);
     }
 
     public decimal TopUpMoney(decimal value)
     {
         if (!CanTopUpMoney(value))
             throw new NullReferenceException();
-        return BalanceValue.IncreaseMoney(value);
+        return _balanceValue.IncreaseMoney(value);
     }
 
     public bool CanTakeMoney(decimal value)
     {
-        return (!ClientAccount.IsSus || TransactionLimit >= value) && !_isExpired && !(BalanceValue.Value < value);
+        return (!ClientAccount.IsSus || TransactionLimit >= value) && !_isExpired && !(_balanceValue.Value < value);
     }
 
     public bool CanTopUpMoney(decimal value)
     {
         return !ClientAccount.IsSus || TransactionLimit >= value;
+    }
+
+    public void AccrualMoney(decimal value)
+    {
+        if (CanTopUpMoney(value))
+            _balanceValue.IncreaseMoney(value);
+    }
+
+    public void DecreaseMoney(decimal value)
+    {
+        if (CanTakeMoney(value))
+            _balanceValue.DecreaseMoney(value);
     }
 
     private void Verify()
@@ -61,11 +78,11 @@ public class DepositAccount : IBankAccount
 
     private void SetMoneyEveryDay()
     {
-        _cashBack += BalanceValue.Value * Percent;
+        _cashBack += _balanceValue.Value * Percent;
     }
 
     private void IncreaseMoneyEveryMonth()
     {
-        BalanceValue.IncreaseMoney(_cashBack);
+        _balanceValue.IncreaseMoney(_cashBack);
     }
 }
