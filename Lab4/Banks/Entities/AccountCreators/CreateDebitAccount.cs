@@ -5,16 +5,14 @@ namespace Banks.Entities.AccountCreators;
 
 public class CreateDebitAccount : ICreateBankAccount
 {
-    private readonly decimal _account;
-    private readonly Client _client;
     private readonly IClock _clock;
     private readonly INotifyStrategy _notifier;
+    private decimal? _account;
+    private Client? _client;
     private Bank? _bank;
 
-    public CreateDebitAccount(decimal account, Client client, IClock clock, INotifyStrategy notifier)
+    public CreateDebitAccount(IClock clock, INotifyStrategy notifier)
     {
-        _account = account;
-        _client = client;
         _clock = clock;
         _notifier = notifier;
     }
@@ -24,8 +22,18 @@ public class CreateDebitAccount : ICreateBankAccount
         _bank = bank;
     }
 
+    public void SetClient(Client client)
+    {
+        _client = client;
+    }
+
+    public void SetAccount(decimal account)
+    {
+        _account = account;
+    }
+
     public IBankAccount Build()
     {
-        return new DebitAccount(_bank !.DebitPercent, _account, _client, _clock, _notifier, _bank.TransactionLimit, _bank);
+        return new DebitAccount(_bank !.DebitPercent, (decimal)_account !, _client !, _clock, _notifier, _bank.TransactionLimit, _bank);
     }
 }

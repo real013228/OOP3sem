@@ -42,9 +42,9 @@ public class CentralBank : ICentralBank
         _transactions.Add(visitor.Transaction !);
     }
 
-    public void CancelTransaction(ITransaction transaction)
+    public void CancelTransaction(Guid transactionId)
     {
-        TransactionWrapper? transactionWrapper = _transactions.FirstOrDefault(x => x.Transaction.Id == transaction.Id);
+        TransactionWrapper? transactionWrapper = _transactions.FirstOrDefault(x => x.Transaction.Id == transactionId);
         if (transactionWrapper == null)
             throw new NullReferenceException();
         transactionWrapper.CancelTransaction();

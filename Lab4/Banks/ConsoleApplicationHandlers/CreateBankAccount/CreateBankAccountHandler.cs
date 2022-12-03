@@ -1,35 +1,32 @@
 ﻿using Banks.Abstractions;
+using Banks.ConsoleApplicationHandlers.CreateBankAccount.Credit;
+using Banks.ConsoleApplicationHandlers.CreateBankAccount.Debit;
 using Banks.ConsoleApplicationHandlers.HandlerAbstractions;
+using Banks.Entities;
 
 namespace Banks.ConsoleApplicationHandlers.CreateBankAccount;
 
 public class CreateBankAccountHandler : IConsoleApplicationHandler
 {
+    private readonly Bank _bank;
+    private readonly IClock _clock;
+    private readonly INotifyStrategy _strategy;
     private IConsoleApplicationHandler? _nextHandler;
-    private ISetBankAccountParameter? _creditHandler;
-    private ISetBankAccountParameter? _debitHandler;
-    private ISetBankAccountParameter? _depositHandler;
+    private ISetBankAccountParameter? _handler;
 
-    public CreateBankAccountHandler(ICentralBank mainCentralBank)
+    public CreateBankAccountHandler(ICentralBank mainCentralBank, Bank bank, INotifyStrategy strategy, IClock clock)
     {
         MainCentralBank = mainCentralBank;
+        _bank = bank;
+        _strategy = strategy;
+        _clock = clock;
     }
 
     public ICentralBank MainCentralBank { get; }
 
     public void SetLessResponsibilitiesHandler(IHandlerLessResponsibilities handler)
     {
-        _creditHandler = handler as ISetBankAccountParameter;
-    }
-
-    public void SetLessResponsibilitiesHandlerDebit(IHandlerLessResponsibilities handler)
-    {
-        _debitHandler = handler as ISetBankAccountParameter;
-    }
-
-    public void SetLessResponsibilitiesHandlerDeposit(IHandlerLessResponsibilities handler)
-    {
-        _depositHandler = handler as ISetBankAccountParameter;
+        _handler = handler as ISetBankAccountParameter;
     }
 
     public void SetNextHandler(IConsoleApplicationHandler nextHandler)
@@ -47,34 +44,25 @@ public class CreateBankAccountHandler : IConsoleApplicationHandler
             Console.WriteLine("1 - Credit account");
             Console.WriteLine("2 - Debit account");
             Console.WriteLine("3 - Deposit account");
+            var creditAccount = new CreateCreditAccountHandler(MainCentralBank, _bank, _clock, _strategy);
+            var debitAccount = new CreateDebitAccountHandler(MainCentralBank, _bank, _strategy, _clock);
+            var depositAccount = new CreateCreditAccountHandler(MainCentralBank, _bank, _clock, _strategy);
+            creditAccount.SetNextHandler(debitAccount);
+            debitAccount.SetNextHandler(depositAccount);
             while (true)
             {
                 ConsoleKeyInfo newKey = Console.ReadKey();
-                switch (newKey.KeyChar)
+                if (newKey.KeyChar is '1' or '2' or '3')
                 {
-                    case '1':
-                        Console.WriteLine("\nPlease set a client name");
-                        string? client = Console.ReadLine();
-                        if (client != null)
-                        {
-                            Console.WriteLine($"Client has been set successfully!");
-                            _creditHandler?.Handle(client);
-                            Console.WriteLine("The credit account has been created successfully!");
-                        }
-
-                        break;
-                    case '2':
-                        Console.WriteLine("\nComing soon!");
-                        break;
-                    case '3':
-                        Console.WriteLine("\nComing soon!");
-                        break;
-                    default:
-                        Console.WriteLine("Please try again");
-                        break;
+                    creditAccount.Handle(newKey.KeyChar);
                 }
-
-                Console.WriteLine("Please try again");
+                else
+                {
+                    Console.WriteLine("\nChoose a number as a kind of account you want to create");
+                    Console.WriteLine("1 - Credit account");
+                    Console.WriteLine("2 - Debit account");
+                    Console.WriteLine("3 - Deposit account");
+                }
             }
         }
         else

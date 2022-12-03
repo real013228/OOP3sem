@@ -16,6 +16,7 @@ public class CreateBankHandler : IConsoleApplicationHandler
     }
 
     public ICentralBank MainCentralBank { get; }
+    public Bank.BankBuilder? Builder { get; private set; }
 
     public void SetLessResponsibilitiesHandler(IHandlerLessResponsibilities handler)
     {
@@ -33,6 +34,18 @@ public class CreateBankHandler : IConsoleApplicationHandler
         {
             Console.WriteLine("\nDo you want to create a bank?\ny/n");
             if (Console.ReadKey().KeyChar != 'y') return;
+            Bank.BankBuilder builder = Bank.Builder;
+            Builder = builder;
+            var commissionHandler = new SetCommissionHandler(MainCentralBank, builder);
+            var creditLimitHandler = new SetCreditLimitHandler(MainCentralBank, builder);
+            var debitPercentHandler = new SetDebitPercentHandler(MainCentralBank, builder);
+            var transactionLimitHandler = new SetTransactionLimitHandler(MainCentralBank, builder);
+            var timeIntervalHandler = new SetTimeIntervalHandler(MainCentralBank, builder);
+            SetLessResponsibilitiesHandler(commissionHandler);
+            commissionHandler.SetNextHandler(creditLimitHandler);
+            creditLimitHandler.SetNextHandler(debitPercentHandler);
+            debitPercentHandler.SetNextHandler(transactionLimitHandler);
+            transactionLimitHandler.SetNextHandler(timeIntervalHandler);
             Console.WriteLine("\nPlease enter a commission for new bank");
             while (true)
             {

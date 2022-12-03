@@ -1,21 +1,22 @@
-﻿using Banks.ConsoleApplicationHandlers.HandlerAbstractions;
+﻿using Banks.Abstractions;
+using Banks.ConsoleApplicationHandlers.HandlerAbstractions;
 using Banks.Entities;
 using Banks.Entities.AccountCreators;
 
 namespace Banks.ConsoleApplicationHandlers.CreateBankAccount;
 
-public class SetCreditAccountHandler : ISetBankAccountParameter
+public class SetAccountHandler : ISetBankAccountParameter
 {
     private ISetBankAccountParameter? _nextHandler;
 
-    public SetCreditAccountHandler(Bank bank, CreateCreditAccount createBankAccount)
+    public SetAccountHandler(Bank bank, ICreateBankAccount createBankAccount)
     {
         Bank = bank;
         CreateBankAccount = createBankAccount;
     }
 
     public Bank Bank { get; }
-    public CreateCreditAccount CreateBankAccount { get; }
+    public ICreateBankAccount CreateBankAccount { get; }
 
     public void SetNextHandler(ISetBankAccountParameter nextHandler)
     {

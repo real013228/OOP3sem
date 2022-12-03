@@ -1,24 +1,22 @@
-﻿using System.Collections.Immutable;
-using Banks.Abstractions;
+﻿using Banks.Abstractions;
 using Banks.ConsoleApplicationHandlers.HandlerAbstractions;
 using Banks.Entities;
-using Banks.Entities.Account;
 using Banks.Entities.AccountCreators;
 
 namespace Banks.ConsoleApplicationHandlers.CreateBankAccount;
 
-public class SetCreditClientHandler : ISetBankAccountParameter
+public class SetClientHandler : ISetBankAccountParameter
 {
     private ISetBankAccountParameter? _nextHandler;
 
-    public SetCreditClientHandler(Bank bank, CreateCreditAccount createBankAccount)
+    public SetClientHandler(Bank bank, ICreateBankAccount createBankAccount)
     {
         Bank = bank;
         CreateBankAccount = createBankAccount;
     }
 
     public Bank Bank { get; }
-    public CreateCreditAccount CreateBankAccount { get; }
+    public ICreateBankAccount CreateBankAccount { get; }
 
     public void SetNextHandler(ISetBankAccountParameter nextHandler)
     {

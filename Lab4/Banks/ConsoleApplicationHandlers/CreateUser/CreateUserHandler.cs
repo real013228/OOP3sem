@@ -1,5 +1,6 @@
 ﻿using Banks.Abstractions;
 using Banks.ConsoleApplicationHandlers.HandlerAbstractions;
+using Banks.Entities;
 
 namespace Banks.ConsoleApplicationHandlers.CreateUser;
 
@@ -7,12 +8,14 @@ public class CreateUserHandler : IConsoleApplicationHandler
 {
     private IConsoleApplicationHandler? _nextHandler;
     private ISetUserHandler? _handler;
-    public CreateUserHandler(ICentralBank mainCentralBank)
+    public CreateUserHandler(ICentralBank mainCentralBank, Bank? bank)
     {
         MainCentralBank = mainCentralBank;
+        Bank = bank;
     }
 
     public ICentralBank MainCentralBank { get; }
+    public Bank? Bank { get; }
     public void SetLessResponsibilitiesHandler(IHandlerLessResponsibilities handler)
     {
         _handler = handler as ISetUserHandler;
@@ -29,6 +32,11 @@ public class CreateUserHandler : IConsoleApplicationHandler
         {
             Console.WriteLine("\nDo you want to make registration as a client?\ny/n");
             if (Console.ReadKey().KeyChar != 'y') return;
+            Client.ClientBuilder builder = Client.Builder;
+            var firstNameHandler = new SetFirstName(builder, MainCentralBank, Bank !);
+            var secondNameHandler = new SetSecondName(builder, MainCentralBank, Bank !);
+            SetLessResponsibilitiesHandler(firstNameHandler);
+            firstNameHandler.SetNextHandler(secondNameHandler);
             Console.WriteLine("\nPlease enter your first name");
             while (true)
             {

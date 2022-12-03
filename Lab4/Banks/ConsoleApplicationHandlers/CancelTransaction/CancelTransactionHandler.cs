@@ -10,6 +10,7 @@ public class CancelTransactionHandler : IConsoleApplicationHandler
     }
 
     public ICentralBank MainCentralBank { get; }
+
     public void SetLessResponsibilitiesHandler(IHandlerLessResponsibilities handler)
     {
         throw new NotImplementedException();
@@ -24,7 +25,15 @@ public class CancelTransactionHandler : IConsoleApplicationHandler
     {
         if (key == '5')
         {
-            Console.WriteLine("\nComing soon!");
+            Console.WriteLine("\nPlease enter Id of transaction");
+            string? transactionId = Console.ReadLine();
+            if (transactionId != null && Guid.TryParse(transactionId, out Guid outValue))
+            {
+                MainCentralBank.CancelTransaction(outValue);
+                Console.WriteLine("\nTransaction has been cancelled successfully!");
+            }
+
+            Console.WriteLine("Bad id of transaction, try again later!");
         }
     }
 }
