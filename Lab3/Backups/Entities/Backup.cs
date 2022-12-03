@@ -19,4 +19,11 @@ public class Backup : IBackup
     {
         _restorePoints.Add(restorePoint);
     }
+
+    public void RemoveRestorePoint(RestorePoint restorePoint)
+    {
+        if (!_restorePoints.Contains(restorePoint))
+            throw new NullReferenceException();
+        _restorePoints.Remove(restorePoint);
+    }
 }
