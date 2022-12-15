@@ -20,9 +20,9 @@ public class BossController : ControllerBase
     public CancellationToken CancellationToken => HttpContext.RequestAborted;
 
     [HttpPost]
-    public async Task<ActionResult<ManagerDto>> CreateManagerAsync([FromBody] CreateBoss model)
+    public async Task<ActionResult<ManagerDto>> CreateBossAsync([FromBody] CreateBoss model)
     {
-        var boss = await _service.CreateBossAsync(model.Name, CancellationToken);
+        var boss = await _service.CreateBossAsync(model.Name, model.Password, CancellationToken);
         return Ok(boss);
     }
 }

@@ -22,8 +22,7 @@ public class ManagerController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<ManagerDto>> CreateManagerAsync([FromBody] CreateManager model)
     {
-        var accessLevel = new Level(model.Level);
-        var worker = await _service.CreateWorkerAsync(model.Session, model.Name, accessLevel, CancellationToken);
-        return Ok(worker);
+        var manager = await _service.CreateManagerAsync(model.Session, model.Name, model.Password, CancellationToken);
+        return Ok(manager);
     }
 }

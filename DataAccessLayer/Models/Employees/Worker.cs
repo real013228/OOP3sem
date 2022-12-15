@@ -4,8 +4,8 @@ namespace DataAccessLayer.Models.Employees;
 
 public class Worker : Employee
 {
-    public Worker(Activity workerActivity, Level accessLevel, string name, Guid id)
-        : base(name, id)
+    public Worker(Activity workerActivity, Level accessLevel, string name, string password, Guid id)
+        : base(name, password, id)
     {
         WorkerActivity = workerActivity;
         AccessLevel = accessLevel;
@@ -14,6 +14,7 @@ public class Worker : Employee
     protected Worker()
     {
         WorkerActivity = null!;
+        AccessLevel = null!;
     }
 
     public virtual Activity WorkerActivity { get; set; }

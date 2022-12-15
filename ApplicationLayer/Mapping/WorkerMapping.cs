@@ -6,5 +6,5 @@ namespace ApplicationLayer.Mapping;
 public static class WorkerMapping
 {
     public static WorkerDto AsDto(this Worker worker)
-        => new WorkerDto(worker.WorkerActivity, worker.AccessLevel, worker.Name, worker.Id);
+        => new WorkerDto(worker.WorkerActivity, worker.AccessLevel, worker.EmployeeName, worker.EmployeePassword, worker.Id);
 }

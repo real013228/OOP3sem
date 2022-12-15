@@ -26,21 +26,22 @@ public class DatabaseContext : DbContext
     {
         modelBuilder.Entity<Employee>()
             .ToTable("Employees")
-            .HasDiscriminator<int>("ContractType")
+            .HasDiscriminator<int>("Type")
             .HasValue<Worker>(1)
             .HasValue<Manager>(2);
         modelBuilder.Entity<BaseMessage>()
             .ToTable("Messages")
-            .HasDiscriminator<int>("ContractType")
+            .HasDiscriminator<int>("Type")
             .HasValue<EmailMessage>(1)
             .HasValue<MobileMessage>(2)
             .HasValue<SmsMessage>(3);
-
         modelBuilder.Entity<MessageSource>()
             .ToTable("MessageSources")
-            .HasDiscriminator<int>("ContractType")
+            .HasDiscriminator<int>("Type")
             .HasValue<EmailMessageSource>(1)
             .HasValue<MobileMessageSource>(2)
             .HasValue<SmsMessageSource>(3);
+        modelBuilder.Entity<Session>()
+            .ToTable("Sessions");
     }
 }

@@ -1,20 +1,24 @@
-﻿using DataAccessLayer.Models.Levels;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using DataAccessLayer.Models.Levels;
 
 namespace DataAccessLayer.Models.Employees;
 
 public abstract class Employee
 {
-    public Employee(string name, Guid id)
+    public Employee(string name, string password, Guid id)
     {
-        Name = name;
+        EmployeeName = name;
         Id = id;
+        EmployeePassword = password;
     }
 
     protected Employee()
     {
-        Name = null!;
+        EmployeeName = null!;
+        EmployeePassword = null!;
     }
 
     public Guid Id { get; set; }
-    public string Name { get; set; }
+    public string EmployeePassword { get; set; }
+    public string EmployeeName { get; set; }
 }
