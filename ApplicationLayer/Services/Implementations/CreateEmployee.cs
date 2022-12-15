@@ -3,6 +3,7 @@ using System.Diagnostics;
 using ApplicationLayer.Dto;
 using ApplicationLayer.Mapping;
 using DataAccessLayer;
+using DataAccessLayer.Models;
 using DataAccessLayer.Models.Employees;
 using DataAccessLayer.Models.Levels;
 using DataAccessLayer.Models.Messages;
@@ -22,25 +23,29 @@ public class CreateEmployee : ICreateEmployee
     public async Task<ManagerDto> CreateBossAsync(string name, CancellationToken token)
     {
         var bossId = Guid.NewGuid();
-        var bossLevel = new Level(0);
         var employees = new Collection<Employee>();
-        var boss = new Manager(employees, bossLevel, name, bossId);
+        var boss = new Manager(employees, name, bossId);
         _context.Employees.Add(boss);
         await _context.SaveChangesAsync(token);
         return boss.AsDto();
     }
 
-    public async Task<ManagerDto> CreateManagerAsync(string name, Level accessLevel, CancellationToken token)
+    public async Task<ManagerDto> CreateManagerAsync(Guid session, string name, CancellationToken token)
     {
-        var managerId = Guid.NewGuid();
+        var gaySession = _context.Sessions.ToList().FirstOrDefault(x => x.Id == session);
+        if (gaySession == null)
+        {
+            throw new NullReferenceException();
+        }
+        
+        // Подумать над инвариантом 
         var employees = new Collection<Employee>();
-        var manager = new Manager(employees, accessLevel, name, managerId);
+        var parentManager = _context.Employees.OfType<Manager>().FirstOrDefault(x => x.Id == gaySession.Id);
+        var manager = new Manager(employees, name, Guid.NewGuid());
         _context.Employees.Add(manager);
-        await _context.SaveChangesAsync(token);
-        return manager.AsDto();
     }
 
-    public async Task<WorkerDto> CreateWorkerAsync(string name, Level accessLevel, CancellationToken token)
+    public async Task<WorkerDto> CreateWorkerAsync(Guid session, string name, Level accessLevel, CancellationToken token)
     {
         var workerId = Guid.NewGuid();
         var messages = new Collection<BaseMessage>();

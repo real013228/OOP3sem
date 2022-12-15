@@ -4,8 +4,8 @@ namespace DataAccessLayer.Models.Employees;
 
 public class Manager : Employee
 {
-    public Manager(ICollection<Employee> employees, Level accessLevel, string name, Guid id)
-        : base(name, accessLevel, id)
+    public Manager(ICollection<Employee> employees, string name, Guid id)
+        : base(name, id)
     {
         Employees = employees;
     }

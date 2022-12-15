@@ -23,7 +23,7 @@ public class WorkerController : ControllerBase
     public async Task<ActionResult<WorkerDto>> CreateWorkerAsync([FromBody] CreateWorker model)
     {
         var accessLevel = new Level(model.Level);
-        var worker = await _service.CreateWorkerAsync(model.Name, accessLevel, CancellationToken);
+        var worker = await _service.CreateWorkerAsync(model.Session, model.Name, accessLevel, CancellationToken);
         return Ok(worker);
     }
 }

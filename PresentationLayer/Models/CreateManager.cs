@@ -1,3 +1,3 @@
 ﻿namespace PresentationLayer.Models;
 
-public record CreateManager(string Name, int Level);
+public record CreateManager(Guid Session, string Name, int Level);
