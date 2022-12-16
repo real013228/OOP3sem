@@ -10,4 +10,10 @@
       <ProjectReference Include="..\DataAccessLayer\DataAccessLayer.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
+      <PackageReference Include="Microsoft.NETCore.App" Version="2.2.8" />
+      <PackageReference Include="xunit.assert" Version="2.4.1" />
+    </ItemGroup>
+
 </Project>

@@ -39,7 +39,9 @@ public class ReportService : IReportService
             foreach (var msg in worker.WorkerActivity.Messages)
             {
                 if (msg.Status == MessageStatus.Handled)
+                {
                     employee.Report.Messages.Add(msg);
+                }
             }
         }
 
