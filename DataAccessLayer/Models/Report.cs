@@ -4,9 +4,10 @@ namespace DataAccessLayer.Models;
 
 public class Report
 {
-    public Report(ICollection<BaseMessage> messages)
+    public Report(ICollection<BaseMessage> messages, Guid id)
     {
         Messages = messages;
+        Id = id;
     }
 
     protected Report()
@@ -14,5 +15,6 @@ public class Report
         Messages = null!;
     }
 
+    public Guid Id { get; set; }
     public virtual ICollection<BaseMessage> Messages { get; set; }
 }

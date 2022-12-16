@@ -4,8 +4,8 @@ namespace DataAccessLayer.Models.Employees;
 
 public class Worker : Employee
 {
-    public Worker(Activity workerActivity, Level accessLevel, string name, string password, Guid id)
-        : base(name, password, id)
+    public Worker(Activity workerActivity, Level accessLevel, string name, string password, Guid workerId)
+        : base(name, password, workerId)
     {
         WorkerActivity = workerActivity;
         AccessLevel = accessLevel;

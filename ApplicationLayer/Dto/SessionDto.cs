@@ -1,3 +1,3 @@
 ﻿namespace ApplicationLayer.Dto;
 
-public record SessionDto(Guid Id, Guid EmployeeId);
+public record SessionDto(Guid SessionId, Guid EmployeeId);

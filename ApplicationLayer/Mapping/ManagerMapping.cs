@@ -6,5 +6,5 @@ namespace ApplicationLayer.Mapping;
 public static class ManagerMapping
 {
     public static ManagerDto AsDto(this Manager manager)
-        => new ManagerDto(manager.Employees, manager.EmployeeName, manager.EmployeePassword, manager.Id);
+        => new ManagerDto(manager.Employees, manager.Report, manager.EmployeeName, manager.EmployeePassword, manager.Id);
 }

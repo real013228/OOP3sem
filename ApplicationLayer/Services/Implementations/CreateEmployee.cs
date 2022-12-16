@@ -7,6 +7,7 @@ using DataAccessLayer.Models;
 using DataAccessLayer.Models.Employees;
 using DataAccessLayer.Models.Levels;
 using DataAccessLayer.Models.Messages;
+using DataAccessLayer.Models.MessageSources;
 using Microsoft.VisualBasic;
 using Activity = DataAccessLayer.Models.Activity;
 
@@ -23,9 +24,12 @@ public class CreateEmployee : ICreateEmployee
 
     public async Task<ManagerDto> CreateBossAsync(string name, string password, CancellationToken token)
     {
-        var bossId = Guid.NewGuid();
+        if (_context.Employees.OfType<Manager>().Any())
+        {
+            throw new NullReferenceException();
+        }
         var employees = new Collection<Employee>();
-        var boss = new Manager(employees, name, password,bossId);
+        var boss = new Manager(employees, name, password, Guid.NewGuid(), new Report(new List<BaseMessage>(), Guid.NewGuid()));
         _context.Employees.Add(boss);
         await _context.SaveChangesAsync(token);
         return boss.AsDto();
@@ -42,7 +46,7 @@ public class CreateEmployee : ICreateEmployee
         // Подумать над инвариантом 
         var employees = new Collection<Employee>();
         var parentManager = _context.Employees.OfType<Manager>().FirstOrDefault(x => x.Id == gaySession.EmployeeId);
-        var manager = new Manager(employees, name, password, Guid.NewGuid());
+        var manager = new Manager(employees, name, password, Guid.NewGuid(), new Report(new List<BaseMessage>(), Guid.NewGuid()));
         parentManager?.Employees.Add(manager);
         _context.Employees.Add(manager);
         await _context.SaveChangesAsync(token);
@@ -62,8 +66,8 @@ public class CreateEmployee : ICreateEmployee
         {
             throw new NullReferenceException();
         }
-        var messages = new Collection<BaseMessage>();
-        var activity = new Activity(messages);
+        var sources = new Collection<BaseMessage>();
+        var activity = new Activity(sources);
         var worker = new Worker(activity, accessLevel, name, password, session);
         parentManager?.Employees.Add(worker);
         _context.Employees.Add(worker);

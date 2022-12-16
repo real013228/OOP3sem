@@ -2,4 +2,4 @@
 
 namespace ApplicationLayer.Dto;
 
-public record MessageSourceDto(string Login, ICollection<BaseMessage> Messages);
+public record MessageSourceDto(string Login, ICollection<BaseMessage> Messages, Guid SourceId);

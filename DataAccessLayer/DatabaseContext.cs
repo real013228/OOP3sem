@@ -16,11 +16,13 @@ public class DatabaseContext : DbContext
         Database.EnsureCreated();
     }
 
+    public DbSet<Activity> Activities { get; set; }
     public DbSet<Employee> Employees { get; set; }
     public DbSet<Account> Accounts { get; set; }
     public DbSet<MessageSource> MessageSources { get; set; }
     public DbSet<BaseMessage> Messages { get; set; }
     public DbSet<Session> Sessions { get; set; }
+    public DbSet<Report> Reports { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -29,6 +31,15 @@ public class DatabaseContext : DbContext
             .HasDiscriminator<int>("Type")
             .HasValue<Worker>(1)
             .HasValue<Manager>(2);
+        modelBuilder.Entity<Employee>()
+            .Property(p => p.Id)
+            .HasColumnName("Id");
+        modelBuilder.Entity<Worker>()
+            .Property(p => p.Id)
+            .HasColumnName("Id");
+        modelBuilder.Entity<Manager>()
+            .Property(p => p.Id)
+            .HasColumnName("Id");
         modelBuilder.Entity<BaseMessage>()
             .ToTable("Messages")
             .HasDiscriminator<int>("Type")
@@ -43,5 +54,9 @@ public class DatabaseContext : DbContext
             .HasValue<SmsMessageSource>(3);
         modelBuilder.Entity<Session>()
             .ToTable("Sessions");
+        modelBuilder.Entity<Report>()
+            .ToTable("Reports");
+        modelBuilder.Entity<Activity>()
+            .ToTable("Activities");
     }
 }
