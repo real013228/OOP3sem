@@ -52,13 +52,13 @@ public class CreateEmployee : ICreateEmployee
 
     public async Task<WorkerDto> CreateWorkerAsync(Guid session, string name, string password, Level accessLevel, CancellationToken token)
     {
-        Session? gaySession = _context.Sessions.FirstOrDefault(x => x.Id == session);
-        if (gaySession == null)
+        Session? secondSession = _context.Sessions.FirstOrDefault(x => x.Id == session);
+        if (secondSession == null)
         {
             throw SessionException.SessionNotFound(session);
         }
         
-        Manager? parentManager = _context.Employees.OfType<Manager>().FirstOrDefault(x => x.Id == gaySession.EmployeeId);
+        Manager? parentManager = _context.Employees.OfType<Manager>().FirstOrDefault(x => x.Id == secondSession.EmployeeId);
         if (parentManager == null)
         {
             throw EmployeeException.EmployeeNotFoundException();
