@@ -1,7 +1,9 @@
 ﻿using ApplicationLayer.Dto;
+using ApplicationLayer.Exceptions;
 using ApplicationLayer.Mapping;
 using DataAccessLayer;
 using DataAccessLayer.Models;
+using DataAccessLayer.Models.Employees;
 
 namespace ApplicationLayer.Services.Implementations;
 
@@ -16,10 +18,10 @@ public class AuthoriseService : IAuthoriseService
 
     public async Task<SessionDto> LoginAsync(string name, string password, CancellationToken token)
     {
-        var employee = _context.Employees.FirstOrDefault(x => x.EmployeeName == name);
+        Employee? employee = _context.Employees.FirstOrDefault(x => x.EmployeeName == name);
         if (employee == null || employee.EmployeePassword != password)
         {
-            throw new NullReferenceException();
+            throw EmployeeException.EmployeeNotFoundException();
         }
 
         var session = new Session(Guid.NewGuid(), employee.Id);

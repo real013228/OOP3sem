@@ -1,4 +1,5 @@
 ﻿using ApplicationLayer.Dto;
+using ApplicationLayer.Exceptions;
 using ApplicationLayer.Mapping;
 using DataAccessLayer;
 using DataAccessLayer.Models;
@@ -20,15 +21,18 @@ public class HandleMessage : IHandleMessage
     {
         Session? session = _context.Sessions.FirstOrDefault(s => s.Id == sessionId);
         if (session == null)
-            throw new NullReferenceException();
+            SessionException.SessionNotFound(sessionId);
+        
         BaseMessage? message = _context.Messages.FirstOrDefault(m => m.Id == messageId);
-        if (message == null || message.Status == MessageStatus.Handled)
-            throw new NullReferenceException();
+        if (message == null)
+            MessageException.MessageNotFound(messageId);
         message.Status = MessageStatus.Handled;
+        
         Worker? employee = _context.Employees.OfType<Worker>().FirstOrDefault(x => x.Id == session.EmployeeId);
         if (employee == null)
-            throw new NullReferenceException();
+            EmployeeException.EmployeeNotFoundException();
         employee.WorkerActivity.Messages.Add(message);
+        
         await _context.SaveChangesAsync(token);
         return message.AsDto();
     }

@@ -1,14 +1,12 @@
 ﻿using System.Collections.ObjectModel;
-using System.Diagnostics;
 using ApplicationLayer.Dto;
+using ApplicationLayer.Exceptions;
 using ApplicationLayer.Mapping;
 using DataAccessLayer;
 using DataAccessLayer.Models;
 using DataAccessLayer.Models.Employees;
 using DataAccessLayer.Models.Levels;
 using DataAccessLayer.Models.Messages;
-using DataAccessLayer.Models.MessageSources;
-using Microsoft.VisualBasic;
 using Activity = DataAccessLayer.Models.Activity;
 
 namespace ApplicationLayer.Services.Implementations;
@@ -37,15 +35,14 @@ public class CreateEmployee : ICreateEmployee
 
     public async Task<ManagerDto> CreateManagerAsync(Guid session, string name, string password, CancellationToken token)
     {
-        var gaySession = _context.Sessions.ToList().FirstOrDefault(x => x.Id == session);
+        Session? gaySession = _context.Sessions.ToList().FirstOrDefault(x => x.Id == session);
         if (gaySession == null)
         {
             throw new NullReferenceException();
         }
         
-        // Подумать над инвариантом 
         var employees = new Collection<Employee>();
-        var parentManager = _context.Employees.OfType<Manager>().FirstOrDefault(x => x.Id == gaySession.EmployeeId);
+        Manager? parentManager = _context.Employees.OfType<Manager>().FirstOrDefault(x => x.Id == gaySession.EmployeeId);
         var manager = new Manager(employees, name, password, Guid.NewGuid(), new Report(new List<BaseMessage>(), Guid.NewGuid()));
         parentManager?.Employees.Add(manager);
         _context.Employees.Add(manager);
@@ -55,16 +52,16 @@ public class CreateEmployee : ICreateEmployee
 
     public async Task<WorkerDto> CreateWorkerAsync(Guid session, string name, string password, Level accessLevel, CancellationToken token)
     {
-        var gaySession = _context.Sessions.ToList().FirstOrDefault(x => x.Id == session);
+        Session? gaySession = _context.Sessions.ToList().FirstOrDefault(x => x.Id == session);
         if (gaySession == null)
         {
-            throw new NullReferenceException();
+            SessionException.SessionNotFound(session);
         }
         
-        var parentManager = _context.Employees.OfType<Manager>().FirstOrDefault(x => x.Id == gaySession.EmployeeId);
+        Manager? parentManager = _context.Employees.OfType<Manager>().FirstOrDefault(x => x.Id == gaySession.EmployeeId);
         if (parentManager == null)
         {
-            throw new NullReferenceException();
+            EmployeeException.EmployeeNotFoundException();
         }
         var sources = new Collection<BaseMessage>();
         var activity = new Activity(sources);

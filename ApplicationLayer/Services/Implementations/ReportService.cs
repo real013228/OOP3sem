@@ -1,5 +1,5 @@
-﻿using System.Collections.ObjectModel;
-using ApplicationLayer.Dto;
+﻿using ApplicationLayer.Dto;
+using ApplicationLayer.Exceptions;
 using ApplicationLayer.Mapping;
 using DataAccessLayer;
 using DataAccessLayer.Models.Employees;
@@ -20,23 +20,23 @@ public class ReportService : IReportService
     {
         if (!_context.Sessions.Any(x => x.Id == sessionId))
         {
-            throw new NullReferenceException();
+            SessionException.SessionNotFound(sessionId);
         }
 
-        var employee = _context.Employees.OfType<Manager>().FirstOrDefault(e => e.Id == employeeId);
+        Manager? employee = _context.Employees.OfType<Manager>().FirstOrDefault(e => e.Id == employeeId);
         if (employee == null)
         {
-            throw new NullReferenceException();
+            EmployeeException.EmployeeNotFoundException();
         }
 
         if (!employee.Employees.Any())
-            throw new NullReferenceException();
-        foreach (var emp in employee.Employees)
+            EmployeeException.EmployeeNotFoundException();
+        foreach (Employee? emp in employee.Employees)
         {
             if (emp is not Worker worker) continue;
             if (worker.WorkerActivity.Messages == null)
                 throw new NullReferenceException();
-            foreach (var msg in worker.WorkerActivity.Messages)
+            foreach (BaseMessage? msg in worker.WorkerActivity.Messages)
             {
                 if (msg.Status == MessageStatus.Handled)
                 {
