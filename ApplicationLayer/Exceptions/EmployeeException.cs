@@ -1,6 +1,4 @@
-﻿using DataAccessLayer.Models.Employees;
-
-namespace ApplicationLayer.Exceptions;
+﻿namespace ApplicationLayer.Exceptions;
 
 public class EmployeeException : Exception
 {

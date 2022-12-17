@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using ApplicationLayer.Dto;
+using ApplicationLayer.Exceptions;
 using ApplicationLayer.Factories;
 using ApplicationLayer.Mapping;
 using DataAccessLayer;
@@ -23,15 +24,18 @@ public class MessageSourceService : IMessageSourceService
     {
         Worker? employee = _context.Employees.OfType<Worker>().FirstOrDefault(x => x.Id == employeeId);
         if (employee == null)
-            throw new ArgumentNullException();
+            throw EmployeeException.EmployeeNotFoundException();
+        
         IQueryable<Account>? accounts = _context.Accounts.Where(a => a.AccessLevel.LevelValue >= employee.AccessLevel.LevelValue);
         if (accounts == null)
-            throw new NullReferenceException();
+            throw AccountException.AccountNotFound();
         
         var messages = new Collection<BaseMessage>();
         MessageSource msgSource = SetMessageSource(type, name, messages);
+        
         Account? account = accounts.FirstOrDefault(a => a.Id == accountId);
         account?.Sources.Add(msgSource);
+        
         await _context.SaveChangesAsync(token);
         return msgSource.AsDto();
     }
@@ -46,7 +50,7 @@ public class MessageSourceService : IMessageSourceService
             _ => null
         };
         if (msgSource == null)
-            throw new ArgumentNullException();
+            throw MessageSourceException.MessageSourceNotFound();
         return msgSource;
     }
 }

@@ -1,6 +1,5 @@
 ﻿using ApplicationLayer.Dto;
 using DataAccessLayer.Models;
-using DataAccessLayer.Models.Employees;
 
 namespace ApplicationLayer.Mapping;
 

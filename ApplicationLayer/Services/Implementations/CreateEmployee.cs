@@ -24,7 +24,7 @@ public class CreateEmployee : ICreateEmployee
     {
         if (_context.Employees.OfType<Manager>().Any())
         {
-            throw new NullReferenceException();
+            throw EmployeeException.EmployeeNotFoundException();
         }
         var employees = new Collection<Employee>();
         var boss = new Manager(employees, name, password, Guid.NewGuid(), new Report(new List<BaseMessage>(), Guid.NewGuid()));
@@ -35,14 +35,14 @@ public class CreateEmployee : ICreateEmployee
 
     public async Task<ManagerDto> CreateManagerAsync(Guid session, string name, string password, CancellationToken token)
     {
-        Session? gaySession = _context.Sessions.ToList().FirstOrDefault(x => x.Id == session);
-        if (gaySession == null)
+        Session? secondSession = _context.Sessions.ToList().FirstOrDefault(x => x.Id == session);
+        if (secondSession == null)
         {
-            throw new NullReferenceException();
+            throw SessionException.SessionNotFound(session);
         }
         
         var employees = new Collection<Employee>();
-        Manager? parentManager = _context.Employees.OfType<Manager>().FirstOrDefault(x => x.Id == gaySession.EmployeeId);
+        Manager? parentManager = _context.Employees.OfType<Manager>().FirstOrDefault(x => x.Id == secondSession.EmployeeId);
         var manager = new Manager(employees, name, password, Guid.NewGuid(), new Report(new List<BaseMessage>(), Guid.NewGuid()));
         parentManager?.Employees.Add(manager);
         _context.Employees.Add(manager);
@@ -66,7 +66,7 @@ public class CreateEmployee : ICreateEmployee
         var sources = new Collection<BaseMessage>();
         var activity = new Activity(sources);
         var worker = new Worker(activity, accessLevel, name, password, session);
-        parentManager?.Employees.Add(worker);
+        parentManager.Employees.Add(worker);
         _context.Employees.Add(worker);
         await _context.SaveChangesAsync(token);
         return worker.AsDto();

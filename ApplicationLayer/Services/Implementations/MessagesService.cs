@@ -1,4 +1,5 @@
 ﻿using ApplicationLayer.Dto;
+using ApplicationLayer.Exceptions;
 using ApplicationLayer.Factories;
 using ApplicationLayer.Mapping;
 using DataAccessLayer;
@@ -21,36 +22,33 @@ public class MessagesService : IMessagesService
     public async Task<IReadOnlyList<MessageDto>> GetMessagesAsync(Guid employeeId, Guid sessionId, CancellationToken token)
     {
         if (!_context.Sessions.Any(x => x.Id == sessionId))
-        {
-            throw new NullReferenceException();
-        }
+            throw SessionException.SessionNotFound(sessionId);
+        
         Worker? employee = _context.Employees.OfType<Worker>().FirstOrDefault(e => e.Id == employeeId);
         if (employee == null)
-            throw new NullReferenceException();
+            throw EmployeeException.EmployeeNotFoundException();
+        
         IQueryable<Account> accounts = _context.Accounts.Where(a => a.AccessLevel.LevelValue >= employee.AccessLevel.LevelValue);
         if (!accounts.Any())
-            throw new NullReferenceException();
-        var sources = new List<MessageSource>();
-        foreach (Account acc in accounts)
-        {
-            sources.AddRange(acc.Sources);
-        }
+            throw AccountException.AccountNotFound();
+        
+        IQueryable<MessageSource> sources = accounts.SelectMany(acc => acc.Sources);
 
         if (!sources.Any())
-            throw new NullReferenceException();
+            throw MessageSourceException.MessageSourceNotFound();
         var messagesDto = new List<MessageDto>();
         foreach (BaseMessage? msg in sources.SelectMany(src => src.Messages))
         {
             messagesDto.Add(msg.AsDto());
             BaseMessage? baseMessage = _context.Messages.FirstOrDefault(m => m.Id == msg.Id);
             if (baseMessage == null)
-                throw new NullReferenceException();
+                throw MessageException.MessageNotFound();
             if (baseMessage.Status == MessageStatus.New)
                 baseMessage.Status = MessageStatus.Received;
         }
 
         if (!messagesDto.Any())
-            throw new NullReferenceException();
+            throw MessageException.MessageNotFound();
         await _context.SaveChangesAsync(token);
         return messagesDto;
     }
@@ -59,7 +57,7 @@ public class MessagesService : IMessagesService
     {
         MessageSource? source = null;
         MessageFactory? factory = null;
-        GetMessageFactory(type, sourceId, factory, source);
+        GetMessageFactory(type, sourceId, ref factory, ref source);
         BaseMessage msg = factory!.CreateMessage(source!.Login, text, theme);
         _context.Messages.Add(msg);
         source.Messages.Add(msg);
@@ -67,7 +65,7 @@ public class MessagesService : IMessagesService
         return msg.AsDto();
     }
 
-    private void GetMessageFactory(string type, Guid sourceId, MessageFactory? factory, MessageSource? source)
+    private void GetMessageFactory(string type, Guid sourceId, ref MessageFactory? factory, ref MessageSource? source)
     {
         switch (type)
         {
@@ -86,6 +84,6 @@ public class MessagesService : IMessagesService
         }
 
         if (factory == null || source == null)
-            throw new ArgumentNullException();
+            throw MessageSourceException.MessageSourceNotFound();
     }
 }

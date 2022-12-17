@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using DataAccessLayer.Models.Messages;
+﻿using DataAccessLayer.Models.Messages;
 using DataAccessLayer.Models.MessageSources;
 
 namespace ApplicationLayer.Factories;

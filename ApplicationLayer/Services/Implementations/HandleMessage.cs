@@ -21,16 +21,16 @@ public class HandleMessage : IHandleMessage
     {
         Session? session = _context.Sessions.FirstOrDefault(s => s.Id == sessionId);
         if (session == null)
-            SessionException.SessionNotFound(sessionId);
+            throw SessionException.SessionNotFound(sessionId);
         
         BaseMessage? message = _context.Messages.FirstOrDefault(m => m.Id == messageId);
         if (message == null)
-            MessageException.MessageNotFound(messageId);
+            throw MessageException.MessageNotFound();
         message.Status = MessageStatus.Handled;
         
         Worker? employee = _context.Employees.OfType<Worker>().FirstOrDefault(x => x.Id == session.EmployeeId);
         if (employee == null)
-            EmployeeException.EmployeeNotFoundException();
+            throw EmployeeException.EmployeeNotFoundException();
         employee.WorkerActivity.Messages.Add(message);
         
         await _context.SaveChangesAsync(token);

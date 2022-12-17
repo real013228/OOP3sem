@@ -1,6 +1,4 @@
-﻿using Isu.Models;
-
-namespace Isu.CustomExceptions;
+﻿namespace Isu.CustomExceptions;
 
 public class CourseNumberException : IsuException
 {

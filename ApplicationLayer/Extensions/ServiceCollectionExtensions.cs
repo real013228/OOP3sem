@@ -1,6 +1,5 @@
 ﻿using ApplicationLayer.Services;
 using ApplicationLayer.Services.Implementations;
-using DataAccessLayer.Models.MessageSources;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ApplicationLayer.Extensions;

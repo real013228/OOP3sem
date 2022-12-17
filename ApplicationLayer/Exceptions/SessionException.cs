@@ -1,6 +1,4 @@
-﻿using ApplicationLayer.Dto;
-
-namespace ApplicationLayer.Exceptions;
+﻿namespace ApplicationLayer.Exceptions;
 
 public class SessionException : Exception
 {

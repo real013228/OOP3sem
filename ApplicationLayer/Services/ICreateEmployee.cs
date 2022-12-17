@@ -1,5 +1,4 @@
 ﻿using ApplicationLayer.Dto;
-using DataAccessLayer.Models;
 using DataAccessLayer.Models.Levels;
 
 namespace ApplicationLayer.Services;
