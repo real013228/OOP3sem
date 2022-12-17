@@ -4,4 +4,4 @@ using DataAccessLayer.Models.Levels;
 
 namespace ApplicationLayer.Dto;
 
-public record ManagerDto(ICollection<Employee> Employees, Report Report, string Name, string Password, Guid ManagerId);
+public record ManagerDto(ICollection<EmployeeDto> Employees, ReportDto Report, string Name, string Password, Guid ManagerId);

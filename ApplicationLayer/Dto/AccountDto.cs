@@ -3,4 +3,4 @@ using DataAccessLayer.Models.MessageSources;
 
 namespace ApplicationLayer.Dto;
 
-public record AccountDto(ICollection<MessageSource> Sources, Level AccessLevel, Guid AccountId);
+public record AccountDto(ICollection<MessageSourceDto> Sources, Level AccessLevel, Guid AccountId);

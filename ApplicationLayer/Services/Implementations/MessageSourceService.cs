@@ -42,6 +42,6 @@ public class MessageSourceService : IMessageSourceService
         var account = accounts.FirstOrDefault(a => a.Id == accountId);
         account?.Sources.Add(msgSource);
         await _context.SaveChangesAsync(token);
-        return msgSource!.AsDto();
+        return msgSource.AsDto();
     }
 }

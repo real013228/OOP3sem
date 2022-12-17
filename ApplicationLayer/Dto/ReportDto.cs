@@ -2,4 +2,4 @@
 
 namespace ApplicationLayer.Dto;
 
-public record ReportDto(ICollection<BaseMessage> Messages, int Count);
+public record ReportDto(ICollection<MessageDto> Messages, int Count);

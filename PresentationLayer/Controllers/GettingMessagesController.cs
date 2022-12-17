@@ -22,7 +22,7 @@ public class GettingMessagesController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<IReadOnlyList<MessageDto>>> GetMessagesAsync([FromBody] GetMessages model)
     {
-        List<MessageDto> messages = await _service.GetMessagesAsync(model.EmployeeId, model.SessionId, CancellationToken);
+        IReadOnlyList<MessageDto> messages = await _service.GetMessagesAsync(model.EmployeeId, model.SessionId, CancellationToken);
         return Ok(messages);
     }
 }

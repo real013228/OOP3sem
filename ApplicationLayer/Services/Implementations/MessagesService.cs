@@ -21,7 +21,7 @@ public class MessagesService : IMessagesService
         _context = context;
     }
 
-    public async Task<List<MessageDto>> GetMessagesAsync(Guid employeeId, Guid sessionId, CancellationToken token)
+    public async Task<IReadOnlyList<MessageDto>> GetMessagesAsync(Guid employeeId, Guid sessionId, CancellationToken token)
     {
         if (!_context.Sessions.Any(x => x.Id == sessionId))
         {
